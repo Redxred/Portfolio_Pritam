@@ -13,15 +13,37 @@ export function initHeroFlow(canvas) {
   let visible = true;
   let light = false;
   let disposed = false;
-  let pointer = .5;
-  let pointerTarget = .5;
+  let pointerX = .5;
+  let pointerY = .5;
+  let pointerTargetX = .5;
+  let pointerTargetY = .5;
+  let pointerStrength = 0;
+  let pointerTargetStrength = 0;
 
   const lineY = (x, index, time, upper = false) => {
-    const progress = x / width;
+    const progress = (x + (pointerX - .5) * 55 * pointerStrength) / width;
     const base = upper ? height * (.11 + index * .026) : height * (.75 + index * .011);
     const wave = Math.sin(progress * 5.1 - time * .46 + index * .22) * (upper ? 12 : 18);
     const ripple = Math.sin(progress * 9.2 + time * .27 - index * .16) * (upper ? 5 : 7);
-    return base + wave + ripple + (progress - .5) * (upper ? -52 : 52) + (pointer - .5) * (upper ? 7 : 10);
+    const distance = (x - pointerX * width) / Math.min(320, Math.max(160, width * .32));
+    const influence = Math.exp(-distance * distance * 1.5) * pointerStrength;
+    const pull = Math.max(-34, Math.min(34, (pointerY * height - base) * .14)) * influence;
+    return base + wave + ripple + (progress - .5) * (upper ? -52 : 52) +
+      (pointerY - .5) * (upper ? 15 : 22) * pointerStrength + pull;
+  };
+
+  const drawPointerGlow = () => {
+    if (pointerStrength < .01) return;
+    const x = pointerX * width;
+    const y = pointerY * height;
+    const radius = Math.min(340, Math.max(180, width * .28));
+    const color = light ? '0, 120, 149' : '36, 218, 233';
+    const glow = context.createRadialGradient(x, y, 0, x, y, radius);
+    glow.addColorStop(0, `rgba(${color}, ${(light ? .14 : .21) * pointerStrength})`);
+    glow.addColorStop(.45, `rgba(${color}, ${(light ? .06 : .09) * pointerStrength})`);
+    glow.addColorStop(1, `rgba(${color}, 0)`);
+    context.fillStyle = glow;
+    context.fillRect(x - radius, y - radius, radius * 2, radius * 2);
   };
 
   const drawLine = (index, total, time, upper = false) => {
@@ -73,7 +95,10 @@ export function initHeroFlow(canvas) {
 
   const draw = time => {
     context.clearRect(0, 0, width, height);
-    pointer += (pointerTarget - pointer) * .035;
+    pointerX += (pointerTargetX - pointerX) * .3;
+    pointerY += (pointerTargetY - pointerY) * .3;
+    pointerStrength += (pointerTargetStrength - pointerStrength) * .32;
+    drawPointerGlow();
     const mobile = width < 640;
     for (let i = 0; i < (mobile ? 4 : 9); i++) drawLine(i, 9, time, true);
     for (let i = 0; i < (mobile ? 14 : 23); i++) drawLine(i, mobile ? 14 : 23, time);
@@ -118,7 +143,14 @@ export function initHeroFlow(canvas) {
   const onPointer = event => {
     if (event.pointerType === 'touch') return;
     const bounds = hero.getBoundingClientRect();
-    pointerTarget = Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width));
+    pointerTargetX = Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width));
+    pointerTargetY = Math.min(1, Math.max(0, (event.clientY - bounds.top) / bounds.height));
+    pointerTargetStrength = 1;
+  };
+  const onPointerLeave = () => {
+    pointerTargetX = .5;
+    pointerTargetY = .5;
+    pointerTargetStrength = 0;
   };
 
   canvas.dataset.motionEngine = 'canvas2d';
@@ -132,6 +164,7 @@ export function initHeroFlow(canvas) {
   const themeObserver = new MutationObserver(syncTheme);
   themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
   hero.addEventListener('pointermove', onPointer, { passive: true });
+  hero.addEventListener('pointerleave', onPointerLeave);
   document.addEventListener('visibilitychange', syncPlayback);
   preference.addEventListener('change', syncPlayback);
   syncTheme();
@@ -146,6 +179,7 @@ export function initHeroFlow(canvas) {
     visibilityObserver.disconnect();
     themeObserver.disconnect();
     hero.removeEventListener('pointermove', onPointer);
+    hero.removeEventListener('pointerleave', onPointerLeave);
     document.removeEventListener('visibilitychange', syncPlayback);
     preference.removeEventListener('change', syncPlayback);
   }, { once: true });

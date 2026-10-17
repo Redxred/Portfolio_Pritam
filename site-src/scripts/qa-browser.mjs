@@ -93,6 +93,21 @@ try {
     assert.equal(await evaluate('document.activeElement.textContent'), 'Skip to content');
   });
   await screenshot('desktop-hero');
+  await check('Hero background follows mouse movement', async () => {
+    const rect = await evaluate("(()=>{const r=document.querySelector('main section:first-child').getBoundingClientRect();return {left:r.left,top:r.top,width:r.width,height:r.height}})()");
+    const alphaAt = x => evaluate(`(()=>{const c=document.querySelector('.hero-flow-canvas');return c.getContext('2d').getImageData(Math.round(c.width*${x}),Math.round(c.height*.5),1,1).data[3]})()`);
+    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: rect.left + rect.width * .2, y: rect.top + rect.height * .5 });
+    await wait(650);
+    await screenshot('hero-pointer-left');
+    const leftAlpha = await alphaAt(.2);
+    const rightAlpha = await alphaAt(.8);
+    const hit = await evaluate(`(()=>{const e=document.elementFromPoint(${rect.left + rect.width * .2},${rect.top + rect.height * .5});return {element:e?.tagName,section:e?.closest('section')?.id,canvas:document.querySelector('.hero-flow-canvas').dataset.motionState}})()`);
+    assert.ok(leftAlpha > rightAlpha + 15, `Left pointer glow did not appear: ${JSON.stringify({ leftAlpha, rightAlpha, rect, hit })}`);
+    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: rect.left + rect.width * .8, y: rect.top + rect.height * .5 });
+    await wait(650);
+    assert.ok((await alphaAt(.8)) > (await alphaAt(.2)) + 15, 'Pointer glow did not follow to the right');
+    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 1, y: 1 });
+  });
   await check('Welcome message opens after five seconds and quick reply works', async () => {
     for (let i = 0; i < 20 && await evaluate("document.querySelector('.welcome-chat-card')?.hidden"); i++) await wait(250);
     assert.equal(await evaluate("document.querySelector('.welcome-chat-card').hidden"), false);
