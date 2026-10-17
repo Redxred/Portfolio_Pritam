@@ -1,0 +1,11 @@
+# Pritam Nath Dipta
+
+> Official portfolio of Pritam Nath Dipta, a cybersecurity, software quality assurance and IT support professional in Chattogram, Bangladesh.
+
+This site contains Pritam Nath Dipta's portfolio, projects, research interests and CV. Use the pages below for current first-party information. His professional profiles provide additional context.
+
+- [Portfolio](https://www.pritamnathdipta.online/): Biography, areas of work, projects and contact links.
+- [CV](https://www.pritamnathdipta.online/cv.html): Readable HTML curriculum vitae.
+- [CV PDF](https://www.pritamnathdipta.online/Pritam_Nath_Dipta_CV.pdf): Downloadable document.
+- [GitHub](https://github.com/Redxred): Public code projects.
+- [LinkedIn](https://www.linkedin.com/in/pritam-nath-dipta/): Professional profile.

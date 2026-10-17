@@ -1,4 +1,18 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "pritamnathdipta.site" }],
+      "destination": "https://www.pritamnathdipta.online/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.pritamnathdipta.site" }],
+      "destination": "https://www.pritamnathdipta.online/:path*",
+      "permanent": true
+    }
+  ]
 }

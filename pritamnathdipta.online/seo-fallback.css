@@ -1,0 +1,40 @@
+/* Visible, useful content while the React bundle loads or JavaScript is unavailable. */
+.seo-fallback {
+  min-height: 100vh;
+  padding: 0 max(24px, calc((100vw - 1100px) / 2));
+  background: radial-gradient(ellipse at 80% 10%, #272044 0, transparent 42%), #0a0f1a;
+  color: #eaf3ff;
+  font-family: Inter, Arial, sans-serif;
+  line-height: 1.65;
+}
+.seo-fallback a { color: #58dcf4; }
+.seo-fallback a:hover { color: #b6f2ff; }
+.seo-fallback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 0;
+  border-bottom: 1px solid #293c53;
+}
+.seo-fallback-header > a { color: #fff; font-weight: 700; text-decoration: none; }
+.seo-fallback-header nav { display: flex; flex-wrap: wrap; gap: 18px; }
+.seo-fallback main { max-width: 780px; padding: 70px 0 80px; }
+.seo-fallback-eyebrow { color: #76dff1; font-size: .82rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.seo-fallback h1 { margin: 10px 0 18px; font-size: clamp(2.8rem, 7vw, 5rem); line-height: 1.08; }
+.seo-fallback-intro { color: #c6d3e5; font-size: 1.18rem; }
+.seo-fallback-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0 60px; }
+.seo-fallback-actions a {
+  display: inline-block;
+  padding: 10px 17px;
+  border: 1px solid #537b91;
+  border-radius: 9px;
+  text-decoration: none;
+}
+.seo-fallback section { padding: 22px 0; border-top: 1px solid #293c53; }
+.seo-fallback h2 { margin: 0 0 8px; font-size: 1.45rem; }
+.seo-fallback section p { margin: 0; color: #c6d3e5; }
+@media (max-width: 600px) {
+  .seo-fallback-header { align-items: flex-start; flex-direction: column; }
+  .seo-fallback main { padding-top: 45px; }
+}

@@ -46,7 +46,7 @@ for (const file of ['profile-optimized.webp', 'hero-optimized.webp']) {
   await copyFile(join(source, 'assets', file), join(destination, 'assets', file));
 }
 await copyFile(join(source, 'assets/Pritam_Nath_Dipta_CV.pdf'), join(destination, 'Pritam_Nath_Dipta_CV.pdf'));
-for (const file of ['favicon.svg', 'favicon.png', 'favicon.ico', 'apple-touch-icon.png', 'social-card.png', 'og-image.png']) {
+for (const file of ['favicon.svg', 'favicon.png', 'favicon.ico', 'apple-touch-icon.png', 'social-card.png', 'og-image.png', 'robots.txt', 'sitemap.xml', 'llms.txt', '641baf96f1d35bf3322be08a41073b28.txt']) {
   await copyFile(fileURLToPath(new URL(`../public/${file}`, import.meta.url)), join(destination, file));
 }
 
@@ -87,7 +87,7 @@ await build({
   },
 });
 
-for (const file of ['legacy-motion.css', 'legacy-motion.js', 'welcome-chat.css', 'welcome-chat.js', 'site-fixes.js', 'cv-fixes.css']) {
+for (const file of ['legacy-motion.css', 'legacy-motion.js', 'welcome-chat.css', 'welcome-chat.js', 'site-fixes.js', 'cv-fixes.css', 'seo-fallback.css']) {
   await copyFile(join(source, file), join(destination, file));
 }
 for (const file of ['index.html', '404.html']) {
