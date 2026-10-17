@@ -5,6 +5,11 @@ export function applyQaFixes(code) {
     if (code.split(before).length !== 2) throw new Error(`Expected one original ${label} fragment`);
     code = code.replace(before, after);
   };
+  // Open the supplied CV in the browser's PDF viewer, where visitors can
+  // inspect it and use the viewer's download control.
+  const cvLink = 'href:"/Pritam_Nath_Dipta_CV.pdf",download:"Pritam_Nath_Dipta_CV.pdf",target:"_blank",rel:"noopener noreferrer"';
+  if (code.split(cvLink).length !== 4) throw new Error('Expected three original CV download links');
+  code = code.replaceAll(cvLink, 'href:"/Pritam_Nath_Dipta_CV.pdf",target:"_blank",rel:"noopener noreferrer"');
   // Replace only the decorative hero backdrop; preserve every foreground element.
   once('c.jsxs("div",{className:"absolute inset-0 z-0",children:[c.jsx("img",{src:gk,alt:"Cyber background",className:"w-full h-full object-cover opacity-30"}),c.jsx("div",{className:"absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background"})]})',
     'c.jsxs("div",{className:"hero-backdrop","aria-hidden":!0,children:[c.jsx("div",{className:"hero-flow-glow hero-flow-glow-cyan"}),c.jsx("div",{className:"hero-flow-glow hero-flow-glow-violet"}),c.jsx("canvas",{className:"hero-flow-canvas"})]})', 'hero backdrop');
