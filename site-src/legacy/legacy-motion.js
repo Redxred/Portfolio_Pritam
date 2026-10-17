@@ -21,7 +21,7 @@ function enhanceExistingSite() {
   document.querySelectorAll('#projects .grid > .group, #services .grid > .group, #research .space-y-6 > .group')
     .forEach(card => card.classList.add('legacy-motion-card'));
 
-  scheduleNetwork(hero);
+  scheduleHeroMotion(hero);
   return true;
 }
 
@@ -130,14 +130,14 @@ function enhanceFooter(footer) {
   });
 }
 
-function scheduleNetwork(hero) {
+function scheduleHeroMotion(hero) {
   if (reducedMotion.matches || saveData) return;
   const load = () => {
     const start = () => {
       if (reducedMotion.matches || saveData) return;
-      const canvas = document.querySelector('.legacy-network-canvas');
+      const canvas = hero.querySelector('.hero-flow-canvas');
       if (!canvas) return;
-      import('./assets/legacy-network.js').then(module => module.initNetwork(canvas)).catch(() => {});
+      import('./assets/hero-flow.js').then(module => module.initHeroFlow(canvas)).catch(() => {});
     };
     if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 1500 });
     else setTimeout(start, 100);

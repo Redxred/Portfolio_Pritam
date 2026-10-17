@@ -147,11 +147,13 @@ try {
 
   const axeCode = await readFile(new URL('../node_modules/axe-core/axe.min.js', import.meta.url), 'utf8');
   for (const theme of ['light', 'dark']) {
-    await check(`${theme} theme and Three.js switch together`, async () => {
+    await check(`${theme} theme and hero motion switch together`, async () => {
       await evaluate(`(()=>{const b=[...document.querySelectorAll('header button[aria-label="Switch to ${theme} mode"]')].find(e=>e.getBoundingClientRect().width);if(b)b.click()})()`);
       await wait(500);
       assert.equal(await evaluate(`document.documentElement.classList.contains('${theme}')`), true);
-      assert.equal(await evaluate("document.querySelector('canvas').dataset.motionTheme"), theme);
+      assert.equal(await evaluate("document.querySelector('.hero-flow-canvas').dataset.motionTheme"), theme);
+      assert.equal(await evaluate("document.querySelector('.hero-flow-canvas').dataset.motionEngine"), 'canvas2d');
+      assert.equal(await evaluate("document.querySelector('.hero-backdrop').contains(document.querySelector('canvas'))"), true);
       assert.equal(await evaluate("document.querySelectorAll('canvas').length"), 1);
     });
     await evaluate('window.scrollTo(0,document.documentElement.scrollHeight)'); await wait(500);
@@ -174,6 +176,8 @@ try {
       assert.equal(await evaluate("(()=>{const r=document.querySelector('.legacy-footer-name').getBoundingClientRect();return r.left>=0&&r.right<=innerWidth})()"), true);
     });
     if (width === 390) {
+      await evaluate('window.scrollTo(0,0)'); await wait(300);
+      await screenshot('mobile-hero');
       await evaluate('window.scrollTo(0,document.documentElement.scrollHeight)'); await wait(200);
       await screenshot('mobile-footer');
       await check('Mobile menu opens and Escape closes it', async () => {
@@ -193,12 +197,12 @@ try {
   }
   await check('Reduced motion stops rendering and letter animation', async () => {
     await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] }); await wait(450);
-    assert.equal(await evaluate("document.querySelector('canvas').dataset.motionState"), 'paused');
+    assert.equal(await evaluate("document.querySelector('.hero-flow-canvas').dataset.motionState"), 'paused');
     assert.equal(await evaluate("getComputedStyle(document.querySelector('.legacy-footer-letter')).animationName"), 'none');
   });
-  await check('Reduced motion skips the Three.js download on reload', async () => {
+  await check('Reduced motion skips the hero animation download on reload', async () => {
     await go('/');
-    assert.equal(await evaluate("performance.getEntriesByType('resource').some(r=>r.name.includes('legacy-network.js'))"), false);
+    assert.equal(await evaluate("performance.getEntriesByType('resource').some(r=>r.name.includes('hero-flow.js'))"), false);
     assert.match(await evaluate('document.querySelector("h1").textContent'), /Pritam Nath Dipta/);
   });
   await check('Reduced-motion navigation scrolls without animation', async () => {

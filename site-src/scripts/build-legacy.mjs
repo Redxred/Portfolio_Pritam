@@ -17,13 +17,13 @@ for (const asset of [
   await access(join(destination, asset));
 }
 
-// Keep the original bundle untouched. Replace only its background component
-// and the image URLs in this generated version; all page content stays intact.
+// Keep the original bundle untouched. The new hero owns its decorative canvas.
+// All foreground content and the original asset remain unchanged.
 let original = await readFile(join(destination, 'assets/index-BHnZK2SX.js'), 'utf8');
 const backgroundStart = original.indexOf('fk=()=>{');
 const backgroundEnd = original.indexOf(',pk=Ah(', backgroundStart);
 if (backgroundStart < 0 || backgroundEnd < 0) throw new Error('Original background component was not found.');
-const background = 'fk=()=>c.jsx("canvas",{className:"fixed inset-0 pointer-events-none z-0 legacy-network-canvas",style:{background:"transparent"},"aria-hidden":!0})';
+const background = 'fk=()=>null';
 original = original.slice(0, backgroundStart) + background + original.slice(backgroundEnd);
 for (const [before, after] of [
   ['/assets/profile-D_u2psRt.jpg', '/assets/profile-optimized.webp'],
@@ -56,16 +56,16 @@ await build({
     emptyOutDir: false,
     target: 'es2020',
     minify: 'esbuild',
-    lib: { entry: join(source, 'network-scene.js'), formats: ['es'], fileName: () => 'legacy-network.js' },
+    lib: { entry: join(source, 'hero-flow.js'), formats: ['es'], fileName: () => 'hero-flow.js' },
     rollupOptions: { output: { inlineDynamicImports: true } },
   },
 });
 
 // Vite retains whitespace in ES library builds; the scene is already shaken,
 // so minify this final module before serving it as a delayed enhancement.
-const scenePath = join(destination, 'assets/legacy-network.js');
+const scenePath = join(destination, 'assets/hero-flow.js');
 const sceneCode = await readFile(scenePath, 'utf8');
-const minified = await transformWithEsbuild(sceneCode, 'legacy-network.js', {
+const minified = await transformWithEsbuild(sceneCode, 'hero-flow.js', {
   minify: true, target: 'es2020', legalComments: 'eof',
 });
 await writeFile(scenePath, minified.code);
@@ -85,4 +85,4 @@ await writeFile(cvPath, cvHtml);
 const apache = (await readFile(join(source, '.htaccess.template'), 'utf8')).replace('__CSP__', contentPolicy);
 await writeFile(join(destination, '.htaccess'), apache);
 
-console.log('Original website, animated footer, and optimized Three.js background are ready in ../pritamnathdipta.online/');
+console.log('Original website, animated footer, and flowing hero background are ready in ../pritamnathdipta.online/');

@@ -7,7 +7,7 @@ export function applyQaFixes(code) {
   };
   // Replace only the decorative hero backdrop; preserve every foreground element.
   once('c.jsxs("div",{className:"absolute inset-0 z-0",children:[c.jsx("img",{src:gk,alt:"Cyber background",className:"w-full h-full object-cover opacity-30"}),c.jsx("div",{className:"absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background"})]})',
-    'c.jsxs("div",{className:"hero-backdrop","aria-hidden":!0,children:[c.jsx("div",{className:"hero-aurora hero-aurora-cyan"}),c.jsx("div",{className:"hero-aurora hero-aurora-violet"}),c.jsx("div",{className:"hero-grid"}),c.jsx("div",{className:"hero-orbit hero-orbit-left"}),c.jsx("div",{className:"hero-orbit hero-orbit-right"})]})', 'hero backdrop');
+    'c.jsxs("div",{className:"hero-backdrop","aria-hidden":!0,children:[c.jsx("div",{className:"hero-flow-glow hero-flow-glow-cyan"}),c.jsx("div",{className:"hero-flow-glow hero-flow-glow-violet"}),c.jsx("canvas",{className:"hero-flow-canvas"})]})', 'hero backdrop');
   once('const b=Bi.map(w=>document.getElementById(w.id)),v=window.scrollY+150;for(let w=b.length-1;w>=0;w--){const g=b[w];if(g&&g.offsetTop<=v){i(Bi[w].id);return}}i("")',
     'const b=Bi.map(w=>document.getElementById(w.id)),v=window.scrollY+150;let best=-Infinity,current="";for(let w=0;w<b.length;w++){const g=b[w];if(!g)continue;const top=g.getBoundingClientRect().top+window.scrollY;if(top<=v&&top>=best){best=top;current=Bi[w].id}}i(current)', 'navigation position');
   once('document.getElementById("about")', 'document.getElementById("projects")', 'hero destination');

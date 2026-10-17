@@ -21,7 +21,7 @@ async function check(name, fn) {
   try { await fn(); results.push({ name, passed: true }); }
   catch (error) { results.push({ name, passed: false, error: error.message }); }
 }
-for (const path of ['/', '/cv.html', '/robots.txt', '/sitemap.xml', '/assets/index-motion.js', '/assets/legacy-network.js', '/site-fixes.js', '/assets/index-local.css', '/fonts/fonts.css', '/fonts/inter-latin.woff2']) {
+for (const path of ['/', '/cv.html', '/robots.txt', '/sitemap.xml', '/assets/index-motion.js', '/assets/hero-flow.js', '/site-fixes.js', '/assets/index-local.css', '/fonts/fonts.css', '/fonts/inter-latin.woff2']) {
   await check(`GET ${path}`, async () => {
     const response = await request(path); assert.equal(response.status, 200);
     for (const [name, value] of Object.entries(securityHeaders)) assert.equal(response.headers[name.toLowerCase()], value);
@@ -43,7 +43,7 @@ await check('PDF download', async () => { const r = await request('/Pritam_Nath_
 await check('Query input is not reflected into HTML', async () => { const value = '<svg onload=alert(1)>'; const r = await request(`/?q=${encodeURIComponent(value)}`); assert.equal(r.status, 200); assert.ok(!r.body.toString().includes(value)); });
 await check('No permissive cross-origin access', async () => { const r = await request('/', 'GET', { Origin: 'https://untrusted.invalid' }); assert.equal(r.headers['access-control-allow-origin'], undefined); });
 await check('No sensitive data in response headers', async () => { const r = await request('/'); assert.equal(r.headers['x-powered-by'], undefined); assert.equal(r.headers['set-cookie'], undefined); });
-await check('Conditional resource caching', async () => { const r = await request('/assets/legacy-network.js'); assert.equal((await request('/assets/legacy-network.js', 'GET', { 'If-Modified-Since': r.headers['last-modified'] })).status, 304); });
+await check('Conditional resource caching', async () => { const r = await request('/assets/hero-flow.js'); assert.equal((await request('/assets/hero-flow.js', 'GET', { 'If-Modified-Since': r.headers['last-modified'] })).status, 304); });
 await writeFile(`${artifacts}/http-results.json`, JSON.stringify(results, null, 2));
 console.log(JSON.stringify({ passed: results.filter(r => r.passed).length, failed: results.filter(r => !r.passed) }, null, 2));
 if (results.some(r => !r.passed)) process.exitCode = 1;

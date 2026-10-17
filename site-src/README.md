@@ -2,9 +2,9 @@
 
 The active website is the original compiled site in `../pritamnathdipta.online/`. Its original JavaScript and CSS bundles are retained there. Motion additions are maintained in `legacy/`.
 
-Run `npm run build` to prepare the active homepage, motion files, and optimized images in the website folder. The build preserves the original bundle and generates `assets/index-motion.js` with its original content and a single Three.js background. The scene is built from `legacy/network-scene.js` and loads after the page becomes visible and the browser is idle. Run `npm run dev` to preview the active website locally.
+Run `npm run build` to prepare the active homepage, motion files, and optimized images in the website folder. The build preserves the original bundle and generates `assets/index-motion.js` with its original content. The hero's animated light ribbons are built from `legacy/hero-flow.js` and load after the page becomes visible and the browser is idle. Run `npm run dev` to preview the active website locally.
 
-`legacy/legacy-motion.js` maintains the animated PRITAM wordmark and footer interactions. The background limits particles and frame rate, reduces work on small screens, and pauses in hidden tabs. Reduced motion and data saving preferences skip the Three.js download.
+`legacy/legacy-motion.js` maintains the animated PRITAM wordmark and footer interactions. The hero canvas limits its frame rate, reduces work on small screens, and pauses when offscreen or in hidden tabs. Reduced motion and data saving preferences skip the animation download.
 
 The older `index.html`, `src/`, and Vite configuration in this folder belong to the superseded redesign and are not part of the active build.
 
