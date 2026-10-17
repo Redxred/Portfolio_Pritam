@@ -4,7 +4,7 @@ The active website is the original compiled site in `../pritamnathdipta.online/`
 
 Run `npm run build` to prepare the active homepage, motion files, and optimized images in the website folder. The build preserves the original bundle and generates `assets/index-motion.js` with its original content. The hero's animated light ribbons are built from `legacy/hero-flow.js` and load after the page becomes visible and the browser is idle. Run `npm run dev` to preview the active website locally.
 
-`legacy/legacy-motion.js` maintains the animated PRITAM wordmark and footer interactions. The hero canvas limits its frame rate, reduces work on small screens, and pauses when offscreen or in hidden tabs. Reduced motion and data saving preferences skip the animation download.
+`legacy/legacy-motion.js` maintains the animated PRITAM wordmark, footer interactions, and the back-to-top button located inside the footer. The hero canvas limits its frame rate, reduces work on small screens, and pauses when offscreen or in hidden tabs. Reduced motion and data saving preferences skip the animation download.
 
 `legacy/welcome-chat.js` and `legacy/welcome-chat.css` provide the glass-style welcome message. It opens five seconds after a visitor loads the homepage, offers three quick replies with automatic follow-ups, and links to the appropriate site section. After closing it, visitors can use the compact contact icon to open a menu for the message, WhatsApp, or email. Quick replies are local; they do not send a message to the site owner.
 

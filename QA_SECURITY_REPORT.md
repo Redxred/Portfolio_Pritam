@@ -25,16 +25,17 @@ The local application was reviewed and tested, and confirmed defects were repair
 | SEC-04 | External dependencies | Self-hosted the existing font families with their OFL licenses. Runtime font requests no longer require third-party domains, allowing tighter style/font policy and avoiding remote font outages. |
 | QA-08 | CV and metadata | Verified the CV layout and printable two-page output, synchronized the PDF used for downloads, restored canonical/social metadata, and provided a branded missing-page response. |
 | QA-09 | Welcome message | Added a glass-style welcome card that opens after five seconds, accepts predefined quick replies, and shows local automatic follow-ups. Closing it reveals a compact contact icon with a menu for the message, WhatsApp, and email. The card identifies itself as automated and does not imply message delivery. |
+| QA-10 | Footer navigation | Added a back-to-top button inside the footer. It scrolls smoothly to the start, with an immediate jump for visitors who prefer reduced motion. |
 
 The hosting header implementation follows the official [Apache mod_headers documentation](https://httpd.apache.org/docs/2.4/mod/mod_headers.html). CSP choices were checked against the [browser CSP reference](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy).
 
 ## Evidence and tests
 
-Final result: **40 HTTP/security checks and 41 browser checks passed (81 total), with zero failed checks**. The individual results are recorded in `qa-chrome-audit/http-results.json` and `qa-chrome-audit/browser-results.json`. Build and syntax checks also passed.
+Final result: **40 HTTP/security checks and 42 browser checks passed (82 total), with zero failed checks**. The individual results are recorded in `qa-chrome-audit/http-results.json` and `qa-chrome-audit/browser-results.json`. Build and syntax checks also passed.
 
 | Check | Coverage/result |
 | --- | --- |
-| Browser QA | Original sections, work action, section tracking, contact requests, safe draft creation, welcome card timing and quick reply, inactive social handling, review filters/navigation, theme switching, mobile menu, reduced motion, CSP, CV print output, and runtime errors. |
+| Browser QA | Original sections, work action, section tracking, contact requests, safe draft creation, welcome card timing and quick reply, footer back-to-top navigation, inactive social handling, review filters/navigation, theme switching, mobile menu, reduced motion, CSP, CV print output, and runtime errors. |
 | Responsive QA | Chrome viewport emulation at 320, 390, 768, 1024, and 1440 pixels. No document horizontal overflow in those checks; the PRITAM footer name fits. This is not a substitute for testing physical devices or other browser engines. |
 | Accessibility | axe-core audits using WCAG 2 A, WCAG 2 AA, and WCAG 2.1 AA tags: zero reported violations on light mode, dark mode, and CV. Keyboard controls and focus behavior were also exercised. This is not an accessibility certification or a complete screen-reader audit. |
 | HTTP/security | Successful resources and headers; denied dotfiles, source directories, backups, PHP files, and maps; disabled directory listing; encoded traversal; unsupported POST/PUT/DELETE/TRACE/PATCH; HEAD/OPTIONS behavior; real 404s; conditional caching; no permissive CORS; no query reflection. |

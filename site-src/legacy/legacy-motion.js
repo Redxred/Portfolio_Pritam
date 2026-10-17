@@ -64,7 +64,18 @@ function enhanceFooter(footer) {
     letters.append(span);
   });
   name.append(accessibleName, letters);
-  container.prepend(name);
+
+  const topRow = document.createElement('div');
+  topRow.className = 'legacy-footer-top-row';
+  const backToTop = document.createElement('button');
+  backToTop.type = 'button';
+  backToTop.className = 'legacy-footer-back-to-top';
+  backToTop.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 14 6-6 6 6"/><path d="M12 8v11"/></svg><span>Back to top</span>';
+  backToTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+  });
+  topRow.append(backToTop);
+  container.prepend(topRow, name);
 
   const entranceObserver = new IntersectionObserver(([entry]) => {
     footer.classList.toggle('is-in-view', entry.isIntersecting);

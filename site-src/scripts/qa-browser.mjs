@@ -169,6 +169,15 @@ try {
     await evaluate("[...document.querySelectorAll('#testimonials button[aria-label=\"Next review\"]')].find(b=>b.getBoundingClientRect().width).click()"); await wait(650);
     assert.notEqual(await evaluate(visibleQuote), before);
   });
+  await check('Footer-only back-to-top button returns to the start', async () => {
+    assert.equal(await evaluate("document.querySelectorAll('.legacy-footer-back-to-top').length"), 1);
+    assert.equal(await evaluate("document.querySelector('.legacy-footer-back-to-top').closest('footer')!==null"), true);
+    await evaluate('window.scrollTo(0,document.documentElement.scrollHeight)');
+    await wait(250);
+    await evaluate("document.querySelector('.legacy-footer-back-to-top').click()");
+    for (let i = 0; i < 30 && await evaluate('window.scrollY > 10'); i++) await wait(200);
+    assert.equal(await evaluate('window.scrollY < 10'), true);
+  });
 
   const axeCode = await readFile(new URL('../node_modules/axe-core/axe.min.js', import.meta.url), 'utf8');
   for (const theme of ['light', 'dark']) {
