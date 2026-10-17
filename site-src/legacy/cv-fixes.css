@@ -1,0 +1,4 @@
+/* Preserve the CV layout while making small green text readable. */
+.cv-eyebrow, .cv-contact > span { color: #376b4d; }
+.cv-section h2 > span { color: #39724f; }
+.cv-certifications li > span { color: #526b5b; }

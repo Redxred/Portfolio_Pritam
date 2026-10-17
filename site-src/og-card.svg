@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="bg" cx=".78" cy=".42" r=".8"><stop stop-color="#173e3b"/><stop offset=".54" stop-color="#0b2024"/><stop offset="1" stop-color="#071216"/></radialGradient>
+    <radialGradient id="orb" cx=".35" cy=".3" r=".75"><stop stop-color="#a6f8a8" stop-opacity=".24"/><stop offset="1" stop-color="#56c6b9" stop-opacity="0"/></radialGradient>
+    <pattern id="grid" width="56" height="56" patternUnits="userSpaceOnUse"><path d="M56 0H0V56" fill="none" stroke="#a0d8bb" stroke-opacity=".11"/></pattern>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c7fa70"/><stop offset="1" stop-color="#63c6bd"/></linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <circle cx="940" cy="305" r="290" fill="url(#orb)"/>
+  <circle cx="940" cy="305" r="240" fill="none" stroke="#9eecd1" stroke-opacity=".25"/>
+  <circle cx="940" cy="305" r="198" fill="none" stroke="#9eecd1" stroke-opacity=".37" stroke-dasharray="5 10"/>
+  <circle cx="940" cy="305" r="154" fill="none" stroke="#c7fa70" stroke-opacity=".48"/>
+  <ellipse cx="940" cy="305" rx="205" ry="90" transform="rotate(-24 940 305)" fill="none" stroke="#b1f29a" stroke-opacity=".72" stroke-width="2"/>
+  <ellipse cx="940" cy="305" rx="205" ry="90" transform="rotate(52 940 305)" fill="none" stroke="#82d6c3" stroke-opacity=".48" stroke-width="2"/>
+  <path d="m940 139 141 83v166l-141 82-141-82V222Zm0 0v166m141-83-141 83-141-83m0 166 141-83 141 83m-141-83v165" fill="none" stroke="url(#line)" stroke-opacity=".6" stroke-width="2"/>
+  <circle cx="940" cy="139" r="6" fill="#c7fa70"/><circle cx="1081" cy="222" r="6" fill="#c7fa70"/><circle cx="1081" cy="388" r="6" fill="#c7fa70"/><circle cx="940" cy="470" r="6" fill="#c7fa70"/><circle cx="799" cy="388" r="6" fill="#c7fa70"/><circle cx="799" cy="222" r="6" fill="#c7fa70"/>
+  <rect x="73" y="73" width="49" height="49" rx="9" fill="none" stroke="#c7fa70" stroke-width="2"/>
+  <text x="85" y="108" fill="#f0f5ef" font-family="Arial,sans-serif" font-size="31" font-weight="700">P</text><circle cx="110" cy="108" r="3" fill="#c7fa70"/>
+  <text x="142" y="103" fill="#a7c3b8" font-family="Arial,sans-serif" font-size="15" font-weight="700" letter-spacing="3">PORTFOLIO / 2026</text>
+  <rect x="73" y="178" width="34" height="3" fill="#c7fa70"/>
+  <text x="73" y="272" fill="#f0f5ef" font-family="Arial,sans-serif" font-size="72" font-weight="700" letter-spacing="-4">PRITAM NATH</text>
+  <text x="73" y="356" fill="#c7fa70" font-family="Arial,sans-serif" font-size="78" font-weight="700" letter-spacing="-4">DIPTA.</text>
+  <text x="76" y="417" fill="#aec5bd" font-family="Arial,sans-serif" font-size="21">Building safer systems. Testing what matters.</text>
+  <rect x="73" y="497" width="555" height="1" fill="#9acbb4" opacity=".4"/>
+  <text x="73" y="533" fill="#c7fa70" font-family="Arial,sans-serif" font-size="14" font-weight="700" letter-spacing="2">CYBERSECURITY   ·   SOFTWARE TESTING   ·   IT SUPPORT</text>
+  <text x="73" y="585" fill="#92aba1" font-family="Arial,sans-serif" font-size="14">pritamnathdipta.online</text>
+</svg>

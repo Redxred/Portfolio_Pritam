@@ -1,0 +1,304 @@
+/* Motion enhancements for the existing site and its footer wordmark. */
+section[id], #main-content { scroll-margin-top: 96px; }
+:is(a, button, input, textarea):focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+a[aria-disabled="true"] { opacity: .45; cursor: not-allowed; }
+.dark .text-secondary { color: hsl(270 90% 75%); }
+.dark #contact a[href*="wa.me"] { color: #052e16; }
+.portfolio-skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 12px 18px;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border: 2px solid hsl(var(--primary));
+  border-radius: 8px;
+  transform: translateY(-180%);
+}
+.portfolio-skip-link:focus { transform: translateY(0); }
+@media (min-width: 768px) { .legacy-footer-row { padding-right: 48px; } }
+.legacy-motion-hero { isolation: isolate; }
+
+/* A resolution-independent backdrop keeps the original hero layout intact. */
+.hero-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(180deg, hsl(var(--background) / .62), hsl(var(--background) / .88) 72%, hsl(var(--background)));
+}
+
+.hero-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 65%, hsl(var(--background)));
+}
+
+.hero-aurora {
+  position: absolute;
+  width: min(940px, 95vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: hero-aurora-drift 22s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+
+.hero-aurora-cyan {
+  top: -32%;
+  left: -20%;
+  background: radial-gradient(ellipse, hsl(var(--primary) / .16), hsl(var(--primary) / .045) 42%, transparent 70%);
+}
+
+.hero-aurora-violet {
+  top: 0;
+  right: -24%;
+  background: radial-gradient(ellipse, hsl(var(--secondary) / .17), hsl(var(--secondary) / .04) 45%, transparent 70%);
+  animation-delay: -11s;
+  animation-direction: alternate-reverse;
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(hsl(var(--primary) / .055) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary) / .055) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at 50% 42%, transparent 30%, #000 95%);
+}
+
+.hero-orbit {
+  position: absolute;
+  width: clamp(650px, 78vw, 1200px);
+  aspect-ratio: 1;
+  border: 1px solid hsl(var(--primary) / .12);
+  border-radius: 50%;
+  box-shadow: 0 0 0 68px hsl(var(--primary) / .025), 0 0 0 69px hsl(var(--primary) / .055), 0 0 0 150px hsl(var(--primary) / .015), 0 0 0 151px hsl(var(--primary) / .04);
+  mask-image: linear-gradient(180deg, transparent, #000 35%, #000 65%, transparent);
+}
+
+.hero-orbit-left { left: -64%; top: -26%; transform: rotate(-25deg) scaleY(.82); }
+.hero-orbit-right { right: -64%; bottom: -33%; transform: rotate(25deg) scaleY(.82); opacity: .65; }
+.legacy-motion-hero.is-in-view .hero-aurora { animation-play-state: running; }
+.legacy-page-hidden .hero-aurora { animation-play-state: paused; }
+
+@keyframes hero-aurora-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(4%, 6%, 0) scale(1.08); }
+}
+
+@media (max-width: 640px) {
+  .hero-aurora { width: 150vw; }
+  .hero-aurora-cyan { top: -10%; left: -85%; }
+  .hero-aurora-violet { top: 15%; right: -90%; }
+  .hero-grid { background-size: 48px 48px; opacity: .65; }
+  .hero-orbit-left { left: -600px; top: -160px; }
+  .hero-orbit-right { right: -600px; bottom: -180px; }
+}
+
+.legacy-motion-card {
+  transition: transform .55s cubic-bezier(.22, 1, .36, 1), box-shadow .55s ease, border-color .3s ease;
+}
+
+.legacy-motion-card:hover {
+  transform: translate3d(0, -5px, 0);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .16);
+}
+
+.legacy-motion-footer {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.legacy-motion-footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(380px circle at var(--motion-x, 50%) var(--motion-y, 0px), hsl(var(--primary) / .13), transparent 75%);
+  opacity: .42;
+  animation: legacy-footer-breathe 7s ease-in-out infinite;
+  animation-play-state: paused;
+  transition: opacity .75s ease;
+}
+
+.legacy-motion-footer::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: var(--motion-x, 50%);
+  width: min(190px, 42vw);
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, hsl(var(--primary) / .62), transparent);
+  opacity: .45;
+  transform: translateX(-50%);
+  transition: left .25s ease, opacity .5s ease;
+}
+
+.legacy-motion-footer.is-pointer-active::before { animation: none; opacity: .85; }
+.legacy-motion-footer.is-pointer-active::after { opacity: .9; }
+.legacy-motion-footer > div { position: relative; z-index: 2; }
+
+.legacy-motion-footer.is-visible .legacy-footer-row > * {
+  animation: legacy-footer-settle .72s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.legacy-motion-footer.is-visible .legacy-footer-row > :nth-child(2) { animation-delay: .08s; }
+.legacy-motion-footer.is-visible .legacy-footer-row > :nth-child(3) { animation-delay: .16s; }
+
+.legacy-footer-name {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto clamp(24px, 3vw, 40px);
+  padding: .12em 0;
+  font-size: clamp(3.5rem, 9vw, 8rem);
+  line-height: 1;
+  font-weight: 800;
+}
+
+.legacy-footer-letters {
+  display: flex;
+  justify-content: center;
+  gap: .075em;
+  transform: perspective(850px) rotateX(var(--name-rx, 0deg)) rotateY(var(--name-ry, 0deg));
+  transition: transform .5s cubic-bezier(.22, 1, .36, 1);
+}
+
+.legacy-footer-letter {
+  display: inline-block;
+  color: transparent;
+  background: linear-gradient(105deg, hsl(var(--primary)), hsl(var(--secondary)));
+  background-size: 600% 100%;
+  background-position: calc(var(--letter) * 20%) 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: legacy-name-wave 5.5s ease-in-out infinite;
+  animation-delay: calc(var(--letter) * -.28s);
+  animation-play-state: paused;
+}
+
+.legacy-motion-footer.is-visible .legacy-footer-name {
+  animation: legacy-footer-settle 1s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.legacy-motion-footer.is-in-view::before,
+.legacy-motion-footer.is-in-view .legacy-footer-letter { animation-play-state: running; }
+
+.legacy-page-hidden .legacy-motion-footer::before,
+.legacy-page-hidden .legacy-motion-footer .legacy-footer-letter { animation-play-state: paused; }
+
+.legacy-motion-footer a {
+  position: relative;
+  transition: color .35s ease, background-color .35s ease, box-shadow .45s ease, transform .45s cubic-bezier(.22, 1, .36, 1);
+}
+
+.legacy-motion-footer a:hover {
+  transform: translate3d(var(--link-x, 0px), calc(-3px + var(--link-y, 0px)), 0);
+  box-shadow: 0 5px 18px hsl(var(--primary) / .13);
+}
+
+.legacy-motion-footer a:active { transform: translateY(-1px) scale(.96); }
+
+@keyframes legacy-footer-breathe {
+  0%, 100% { opacity: .32; }
+  50% { opacity: .52; }
+}
+
+@keyframes legacy-footer-settle {
+  from { opacity: 0; transform: translateY(11px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes legacy-name-wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@media (max-width: 640px) {
+  .legacy-motion-card:hover { transform: none; box-shadow: none; }
+  .legacy-footer-name { margin-bottom: 26px; }
+}
+
+/* Light mode uses the same layout with readable accents and clear surfaces. */
+.light {
+  color-scheme: light;
+  --background: 210 35% 98%;
+  --foreground: 222 33% 15%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 33% 15%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 33% 15%;
+  --primary: 187 84% 25%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 266 65% 42%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 214 28% 94%;
+  --muted-foreground: 217 18% 36%;
+  --accent: 187 84% 25%;
+  --accent-foreground: 0 0% 100%;
+  --border: 214 25% 81%;
+  --input: 216 18% 57%;
+  --ring: 187 84% 25%;
+  --gradient-cyber: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+  --glow-primary: 0 4px 18px hsl(var(--primary) / .18);
+  --glow-secondary: 0 4px 18px hsl(var(--secondary) / .14);
+}
+
+.light .hero-aurora-cyan { background: radial-gradient(ellipse, hsl(185 75% 65% / .25), hsl(185 75% 65% / .06) 42%, transparent 70%); }
+.light .hero-aurora-violet { background: radial-gradient(ellipse, hsl(266 80% 78% / .25), hsl(266 80% 78% / .06) 45%, transparent 70%); }
+.light .hero-grid { opacity: .7; }
+.light .hero-orbit { opacity: .6; }
+
+.light :is(.glass, [class~="bg-card/50"]) {
+  background-color: hsl(var(--card) / .96);
+  border-color: hsl(var(--border));
+  box-shadow: 0 4px 18px hsl(217 30% 25% / .035);
+}
+
+.light .legacy-motion-card:hover {
+  border-color: hsl(var(--primary) / .4);
+  box-shadow: 0 14px 30px hsl(217 30% 25% / .09);
+}
+
+.light :is(input, textarea) {
+  background-color: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--input));
+}
+
+.light :is(input, textarea)::placeholder { color: hsl(var(--muted-foreground)); }
+
+.light #contact div.font-mono { background-color: hsl(var(--card) / .96); }
+
+.light :is(a, button, input, textarea):focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 3px;
+}
+
+.light :is(input, textarea):focus-visible { border-color: hsl(var(--primary)); }
+
+.light #contact a[href*="wa.me"] { background-color: #13783f; }
+.light #contact a[href*="wa.me"]:hover { background-color: #0e6332; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-aurora { animation: none; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .legacy-motion-footer::before,
+  .legacy-motion-footer.is-visible .legacy-footer-row > *,
+  .legacy-motion-footer.is-visible .legacy-footer-name,
+  .legacy-motion-footer .legacy-footer-letter { animation: none; }
+  .legacy-motion-footer::after, .legacy-motion-card, .legacy-motion-footer a,
+  .legacy-footer-letters { transition: none; }
+  .legacy-footer-letters { transform: none; }
+  .legacy-motion-card:hover, .legacy-motion-footer a:hover { transform: none; }
+}

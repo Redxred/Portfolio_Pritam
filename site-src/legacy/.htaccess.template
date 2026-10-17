@@ -1,0 +1,52 @@
+Options -Indexes -MultiViews
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+ServerSignature Off
+<IfModule mod_mime.c>
+  AddType font/woff2 .woff2
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set Content-Security-Policy "__CSP__"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  Header always set Strict-Transport-Security "max-age=31536000" "expr=%{HTTPS} == 'on'"
+  Header always set Allow "GET, HEAD, OPTIONS" "expr=%{REQUEST_STATUS} == 405"
+  <FilesMatch "\.(html|js|css)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Fixed canonical host avoids attacker-controlled redirect destinations.
+  RewriteCond %{HTTP_HOST} ^(?:www\.)?pritamnathdipta\.online$ [NC]
+  RewriteCond %{HTTPS} !=on [OR]
+  RewriteCond %{HTTP_HOST} !^www\.pritamnathdipta\.online$ [NC]
+  RewriteRule ^ https://www.pritamnathdipta.online%{REQUEST_URI} [R=301,L]
+
+  # This site has no upload, database, or form submission endpoint.
+  RewriteCond %{REQUEST_METHOD} !^(GET|HEAD|OPTIONS)$ [NC]
+  RewriteRule ^ - [R=405,L]
+
+  RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/[A-Za-z0-9_-]+$
+  RewriteRule (^|/)\. - [F,L]
+  RewriteRule ^(?:node_modules|site-src|qa-chrome[^/]*)(?:/|$) - [F,L,NC]
+  # Missing files return real 404 responses instead of the homepage with 200.
+</IfModule>
+
+<FilesMatch "(?i)(?:^\.|~$|\.(?:bak|old|orig|log|ini|env|map|sqlite|db|sql|ya?ml|toml|conf|key|pem|p12|pfx|php[0-9]*|phtml|cgi|pl|sh)$|^(?:package(?:-lock)?\.json|composer\.(?:json|lock)|AGENTS\.md)$)">
+  Require all denied
+</FilesMatch>
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php81” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php81 .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit

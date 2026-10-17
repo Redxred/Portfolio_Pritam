@@ -1,0 +1,6 @@
+site-src/node_modules/
+qa-chrome-*/
+qa-*.png
+.env
+.env.*
+!.env.example
