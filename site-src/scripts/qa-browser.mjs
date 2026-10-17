@@ -91,7 +91,15 @@ try {
     await evaluate("document.querySelector('.welcome-chat-close').click()");
     assert.equal(await evaluate("document.querySelector('.welcome-chat-launcher').hidden"), false);
     await evaluate("document.querySelector('.welcome-chat-launcher').click()");
+    assert.equal(await evaluate("document.querySelector('.welcome-chat-menu').hidden"), false);
+    assert.equal(await evaluate("document.querySelector('.welcome-chat-launcher').getAttribute('aria-expanded')"), 'true');
+    assert.equal(await evaluate("document.querySelector('.welcome-chat-menu a[href^=\"https://wa.me/\"]').getAttribute('href')"), 'https://wa.me/8801318882755');
+    assert.equal(await evaluate("document.querySelector('.welcome-chat-menu a[href^=\"mailto:\"]').getAttribute('href')"), 'mailto:redxpritam@gmail.com');
+    await wait(300);
+    await screenshot('contact-menu');
+    await evaluate("document.querySelector('[data-contact=message]').click()");
     assert.equal(await evaluate("document.querySelector('.welcome-chat-card').hidden"), false);
+    assert.equal(await evaluate("document.querySelector('.welcome-chat-menu').hidden"), true);
     await evaluate("document.querySelector('.welcome-chat-close').click()");
   });
   await check('Hero work action reaches projects', async () => {
@@ -196,6 +204,9 @@ try {
       await evaluate('window.scrollTo(0,0)'); await wait(300);
       await screenshot('mobile-hero');
       await evaluate("document.querySelector('.welcome-chat-launcher').click()");
+      await wait(300);
+      await screenshot('mobile-contact-menu');
+      await evaluate("document.querySelector('[data-contact=message]').click()");
       await wait(500);
       await screenshot('mobile-welcome-chat');
       await evaluate("document.querySelector('.welcome-chat-close').click()");
