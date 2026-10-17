@@ -46,6 +46,9 @@ for (const file of ['profile-optimized.webp', 'hero-optimized.webp']) {
   await copyFile(join(source, 'assets', file), join(destination, 'assets', file));
 }
 await copyFile(join(source, 'assets/Pritam_Nath_Dipta_CV.pdf'), join(destination, 'Pritam_Nath_Dipta_CV.pdf'));
+for (const file of ['favicon.svg', 'favicon.png', 'favicon.ico', 'apple-touch-icon.png', 'social-card.png', 'og-image.png']) {
+  await copyFile(fileURLToPath(new URL(`../public/${file}`, import.meta.url)), join(destination, file));
+}
 
 await build({
   configFile: false,
