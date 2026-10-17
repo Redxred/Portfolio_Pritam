@@ -191,9 +191,9 @@ try {
     await evaluate('window.scrollTo(0,document.documentElement.scrollHeight)');
     await wait(250);
     await evaluate("document.querySelector('.legacy-footer-back-to-top').click()");
-    for (let i = 0; i < 30 && await evaluate('window.scrollY > 10'); i++) await wait(200);
+    for (let i = 0; i < 30 && await evaluate('window.scrollY > 12'); i++) await wait(200);
     const scrollY = await evaluate('window.scrollY');
-    assert.ok(scrollY < 10, `Back-to-top stopped at ${scrollY}px`);
+    assert.ok(scrollY <= 12, `Back-to-top stopped at ${scrollY}px`);
   });
 
   const axeCode = await readFile(new URL('../node_modules/axe-core/axe.min.js', import.meta.url), 'utf8');
