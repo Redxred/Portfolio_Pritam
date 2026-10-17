@@ -40,12 +40,6 @@ export function enhanceSite() {
       }
       if (label) button.setAttribute('aria-label', label);
     });
-    document.querySelectorAll('a[aria-label="Twitter"]:not([href])').forEach(link => {
-      link.setAttribute('role', 'link');
-      link.setAttribute('aria-disabled', 'true');
-      link.tabIndex = -1;
-      link.title = 'Twitter profile is not configured';
-    });
     document.querySelectorAll('a[href^="mailto:"]').forEach(link => link.removeAttribute('target'));
   };
   const observer = new MutationObserver(labelControls);

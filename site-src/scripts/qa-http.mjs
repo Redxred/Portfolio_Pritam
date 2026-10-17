@@ -21,13 +21,19 @@ async function check(name, fn) {
   try { await fn(); results.push({ name, passed: true }); }
   catch (error) { results.push({ name, passed: false, error: error.message }); }
 }
-for (const path of ['/', '/cv.html', '/robots.txt', '/sitemap.xml', '/assets/index-motion.js', '/assets/hero-flow.js', '/site-fixes.js', '/welcome-chat.js', '/welcome-chat.css', '/assets/index-local.css', '/fonts/fonts.css', '/fonts/inter-latin.woff2']) {
+for (const path of ['/', '/cv.html', '/cv.css', '/cv.js', '/seo-fallback.css', '/robots.txt', '/sitemap.xml', '/assets/index-motion.js', '/assets/hero-flow.js', '/site-fixes.js', '/welcome-chat.js', '/welcome-chat.css', '/assets/index-local.css', '/fonts/fonts.css', '/fonts/inter-latin.woff2']) {
   await check(`GET ${path}`, async () => {
     const response = await request(path); assert.equal(response.status, 200);
     for (const [name, value] of Object.entries(securityHeaders)) assert.equal(response.headers[name.toLowerCase()], value);
     if (path.endsWith('.js')) assert.match(response.headers['content-type'], /javascript/);
   });
 }
+await check('Homepage keeps readable HTML without JavaScript', async () => {
+  const html = (await request('/')).body.toString();
+  assert.match(html, /<h1>Pritam Nath Dipta<\/h1>/);
+  assert.match(html, /document\.documentElement\.classList\.add\('js'\)/);
+  assert.match(html, /<script type="application\/ld\+json">/);
+});
 for (const path of ['/.env', '/.git/config', '/.htaccess', '/site-src/package.json', '/node_modules/', '/qa-chrome-audit/', '/assets/', '/backup.sql', '/server.php', '/assets/app.js.map', '/%2e%2e/site-src/package.json', '/assets/%2e%2e/%2e%2e/site-src/package.json', '/assets%5c..%5cpackage.json']) {
   await check(`Block ${path}`, async () => { assert.equal((await request(path)).status, 403); });
 }

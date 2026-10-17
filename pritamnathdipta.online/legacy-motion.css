@@ -1,7 +1,7 @@
 /* Motion enhancements for the existing site and its footer wordmark. */
+#root header { background-color: hsl(var(--background)); }
 section[id], #main-content { scroll-margin-top: 96px; }
 :is(a, button, input, textarea):focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
-a[aria-disabled="true"] { opacity: .45; cursor: not-allowed; }
 .dark .text-secondary { color: hsl(270 90% 75%); }
 .dark #contact a[href*="wa.me"] { color: #052e16; }
 .portfolio-skip-link {
@@ -136,6 +136,7 @@ a[aria-disabled="true"] { opacity: .45; cursor: not-allowed; }
 .legacy-motion-footer.is-pointer-active::before { animation: none; opacity: .85; }
 .legacy-motion-footer.is-pointer-active::after { opacity: .9; }
 .legacy-motion-footer > div { position: relative; z-index: 2; }
+.legacy-footer-credit { padding-right: 64px; }
 
 .legacy-motion-footer.is-visible .legacy-footer-row > * {
   animation: legacy-footer-settle .72s cubic-bezier(.22, 1, .36, 1) both;

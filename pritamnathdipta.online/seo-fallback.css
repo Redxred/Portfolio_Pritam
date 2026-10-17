@@ -1,4 +1,6 @@
-/* Visible, useful content while the React bundle loads or JavaScript is unavailable. */
+/* Keep crawlable content available when JavaScript is unavailable. */
+html.js .seo-fallback { display: none; }
+html.js body { min-height: 100vh; background: #0a0f1a; }
 .seo-fallback {
   min-height: 100vh;
   padding: 0 max(24px, calc((100vw - 1100px) / 2));
@@ -34,6 +36,7 @@
 .seo-fallback section { padding: 22px 0; border-top: 1px solid #293c53; }
 .seo-fallback h2 { margin: 0 0 8px; font-size: 1.45rem; }
 .seo-fallback section p { margin: 0; color: #c6d3e5; }
+.seo-fallback-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 22px 0; border-top: 1px solid #293c53; color: #a7b9cc; font-size: .875rem; }
 @media (max-width: 600px) {
   .seo-fallback-header { align-items: flex-start; flex-direction: column; }
   .seo-fallback main { padding-top: 45px; }

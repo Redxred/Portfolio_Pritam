@@ -36,8 +36,12 @@ export function applyQaFixes(code) {
   once('href:n.link,target:"_blank",rel:"noopener noreferrer"',
     'href:n.link||"#contact",target:n.link?"_blank":void 0,rel:"noopener noreferrer",onClick:n.link?void 0:r=>{r.preventDefault();window.dispatchEvent(new CustomEvent("portfolio:request-paper",{detail:n.title}))}', 'paper destination');
   once(',"View Paper"]', ',n.link?"View Paper":"Request Paper"]', 'paper action label');
-  if (code.split('href:"#",label:"Twitter"').length !== 3) throw new Error('Expected two unconfigured Twitter links');
-  code = code.replaceAll('href:"#",label:"Twitter"', 'href:void 0,label:"Twitter"');
+  const unusedTwitter = ',{icon:Bh,href:"#",label:"Twitter"}';
+  if (code.split(unusedTwitter).length !== 3) throw new Error('Expected two unconfigured Twitter links');
+  code = code.replaceAll(unusedTwitter, '');
+  once('" Pritam Nath Dipta. All rights reserved."', '" HacknFix. All rights reserved."', 'footer copyright');
+  once('c.jsxs("p",{className:"text-xs sm:text-sm font-mono order-3",children:[c.jsx("span",{className:"text-primary",children:"<"}),c.jsx("span",{className:"text-muted-foreground",children:"built with"}),c.jsx("span",{className:"text-secondary",children:" blackX"}),c.jsx("span",{className:"text-primary",children:" />"})]})',
+    'c.jsx("p",{className:"legacy-footer-credit text-xs sm:text-sm font-mono order-3",children:"Developed by Pritam"})', 'footer developer credit');
 
   const whatsapp = 'c.jsx("a",{href:"https://wa.me/8801318882755",target:"_blank",rel:"noopener noreferrer",children:c.jsxs(xe,{className:"w-full bg-[#25D366] hover:bg-[#20BD5A] text-white",children:[c.jsx(Ux,{className:"w-5 h-5 mr-2"}),"Chat on WhatsApp"]})})';
   once(whatsapp, 'c.jsx(xe,{asChild:!0,className:"w-full bg-[#25D366] hover:bg-[#20BD5A] text-white",children:c.jsxs("a",{href:"https://wa.me/8801318882755",target:"_blank",rel:"noopener noreferrer",children:[c.jsx(Ux,{className:"w-5 h-5 mr-2"}),"Chat on WhatsApp"]})})', 'WhatsApp markup');

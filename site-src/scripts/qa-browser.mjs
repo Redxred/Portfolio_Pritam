@@ -63,6 +63,15 @@ try {
   await send('Page.enable'); await send('Runtime.enable'); await send('Network.enable'); await send('Log.enable');
   await send('Page.addScriptToEvaluateOnNewDocument', { source: "window.__qaCsp=[]; document.addEventListener('securitypolicyviolation',e=>window.__qaCsp.push(e.effectiveDirective)); try { if(!localStorage.theme) localStorage.theme='dark'; } catch {}" });
   await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+  await send('Network.setBlockedURLs', { urls: [`${origin}/assets/index-motion.js`] });
+  await send('Page.navigate', { url: `${origin}/` });
+  await wait(600);
+  await check('Crawlable startup text stays hidden when JavaScript is enabled', async () => {
+    assert.equal(await evaluate("document.documentElement.classList.contains('js')"), true);
+    assert.equal(await evaluate("getComputedStyle(document.querySelector('.seo-fallback')).display"), 'none');
+  });
+  await send('Network.setBlockedURLs', { urls: [] });
+  errors.length = 0; consoleErrors.length = 0; requests.length = 0;
   await go('/');
   await check('Homepage and original sections render', async () => {
     assert.deepEqual(await evaluate("[...document.querySelectorAll('main section[id]')].map(s=>s.id)"), ['about', 'projects', 'services', 'facts', 'research', 'testimonials', 'contact']);
@@ -124,7 +133,13 @@ try {
     assert.match(await evaluate("document.querySelector('#contact-message').value"), /Malware Detection/);
     assert.equal(await evaluate("document.querySelectorAll('a[href=\"\"], a[href=\"#\"]').length"), 0);
   });
-  await check('Unconfigured social links are disabled', async () => { assert.equal(await evaluate("[...document.querySelectorAll('a[aria-label=Twitter]')].every(a=>a.getAttribute('aria-disabled')==='true'&&!a.hasAttribute('href'))"), true); });
+  await check('Footer ownership and unused social links', async () => {
+    assert.equal(await evaluate("document.querySelectorAll('a[aria-label=Twitter]').length"), 0);
+    const footerText = await evaluate("document.querySelector('footer').textContent");
+    assert.match(footerText, /HacknFix\. All rights reserved\./);
+    assert.match(footerText, /Developed by Pritam/);
+    assert.doesNotMatch(footerText, /blackX/);
+  });
   await check('Project and publication actions open real destinations', async () => {
     const opened = await evaluate(`(()=>{const original=window.open,urls=[];window.open=(...args)=>urls.push(args);for(const text of ['View All Projects','View All Publications']){[...document.querySelectorAll('button')].find(b=>b.textContent.includes(text)).click()}window.open=original;return urls})()`);
     assert.match(opened[0][0], /^https:\/\/github\.com\/Redxred/);
@@ -177,7 +192,8 @@ try {
     await wait(250);
     await evaluate("document.querySelector('.legacy-footer-back-to-top').click()");
     for (let i = 0; i < 30 && await evaluate('window.scrollY > 10'); i++) await wait(200);
-    assert.equal(await evaluate('window.scrollY < 10'), true);
+    const scrollY = await evaluate('window.scrollY');
+    assert.ok(scrollY < 10, `Back-to-top stopped at ${scrollY}px`);
   });
 
   const axeCode = await readFile(new URL('../node_modules/axe-core/axe.min.js', import.meta.url), 'utf8');

@@ -3,9 +3,10 @@ import { readFileSync } from 'node:fs';
 
 const themeScript = readFileSync(new URL('./theme-init.txt', import.meta.url), 'utf8');
 const themeHash = createHash('sha256').update(themeScript).digest('base64');
+const startupHash = createHash('sha256').update("document.documentElement.classList.add('js');").digest('base64');
 export const contentPolicy = [
   "default-src 'none'",
-  `script-src 'self' 'sha256-${themeHash}'`,
+  `script-src 'self' 'sha256-${themeHash}' 'sha256-${startupHash}'`,
   "script-src-attr 'none'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
