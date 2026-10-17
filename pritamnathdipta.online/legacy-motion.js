@@ -1,7 +1,9 @@
 // Enhancements around the original layout; the compiled site's content stays intact.
 import { enhanceSite } from './site-fixes.js';
+import { initWelcomeChat } from './welcome-chat.js';
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const saveData = navigator.connection?.saveData;
+initWelcomeChat();
 
 function enhanceExistingSite() {
   const hero = document.querySelector('main section:first-child');

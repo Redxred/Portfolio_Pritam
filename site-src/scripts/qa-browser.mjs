@@ -77,6 +77,23 @@ try {
     assert.equal(await evaluate('document.activeElement.textContent'), 'Skip to content');
   });
   await screenshot('desktop-hero');
+  await check('Welcome message opens after five seconds and quick reply works', async () => {
+    for (let i = 0; i < 20 && await evaluate("document.querySelector('.welcome-chat-card')?.hidden"); i++) await wait(250);
+    assert.equal(await evaluate("document.querySelector('.welcome-chat-card').hidden"), false);
+    assert.match(await evaluate("document.querySelector('.welcome-chat-card').textContent"), /How are you finding it so far/);
+    await wait(500);
+    await screenshot('welcome-chat');
+    await evaluate("document.querySelector('[data-reply=love]').click()");
+    assert.match(await evaluate("document.querySelector('.welcome-chat-bubble-answer').textContent"), /thank you/);
+    assert.equal(await evaluate("document.querySelector('.welcome-chat-replies').hidden"), true);
+    assert.equal(await evaluate("document.querySelector('.welcome-chat-action').getAttribute('href')"), '#contact');
+    await screenshot('welcome-chat-reply');
+    await evaluate("document.querySelector('.welcome-chat-close').click()");
+    assert.equal(await evaluate("document.querySelector('.welcome-chat-launcher').hidden"), false);
+    await evaluate("document.querySelector('.welcome-chat-launcher').click()");
+    assert.equal(await evaluate("document.querySelector('.welcome-chat-card').hidden"), false);
+    await evaluate("document.querySelector('.welcome-chat-close').click()");
+  });
   await check('Hero work action reaches projects', async () => {
     await evaluate("[...document.querySelectorAll('button')].find(b=>b.textContent==='Explore My Work').click()"); await settleScroll('projects');
     const top = await evaluate("document.querySelector('#projects').getBoundingClientRect().top");
@@ -178,6 +195,10 @@ try {
     if (width === 390) {
       await evaluate('window.scrollTo(0,0)'); await wait(300);
       await screenshot('mobile-hero');
+      await evaluate("document.querySelector('.welcome-chat-launcher').click()");
+      await wait(500);
+      await screenshot('mobile-welcome-chat');
+      await evaluate("document.querySelector('.welcome-chat-close').click()");
       await evaluate('window.scrollTo(0,document.documentElement.scrollHeight)'); await wait(200);
       await screenshot('mobile-footer');
       await check('Mobile menu opens and Escape closes it', async () => {

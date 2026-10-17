@@ -21,7 +21,7 @@ async function check(name, fn) {
   try { await fn(); results.push({ name, passed: true }); }
   catch (error) { results.push({ name, passed: false, error: error.message }); }
 }
-for (const path of ['/', '/cv.html', '/robots.txt', '/sitemap.xml', '/assets/index-motion.js', '/assets/hero-flow.js', '/site-fixes.js', '/assets/index-local.css', '/fonts/fonts.css', '/fonts/inter-latin.woff2']) {
+for (const path of ['/', '/cv.html', '/robots.txt', '/sitemap.xml', '/assets/index-motion.js', '/assets/hero-flow.js', '/site-fixes.js', '/welcome-chat.js', '/welcome-chat.css', '/assets/index-local.css', '/fonts/fonts.css', '/fonts/inter-latin.woff2']) {
   await check(`GET ${path}`, async () => {
     const response = await request(path); assert.equal(response.status, 200);
     for (const [name, value] of Object.entries(securityHeaders)) assert.equal(response.headers[name.toLowerCase()], value);

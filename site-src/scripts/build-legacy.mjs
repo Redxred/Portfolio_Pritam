@@ -70,7 +70,7 @@ const minified = await transformWithEsbuild(sceneCode, 'hero-flow.js', {
 });
 await writeFile(scenePath, minified.code);
 
-for (const file of ['legacy-motion.css', 'legacy-motion.js', 'site-fixes.js', 'cv-fixes.css']) {
+for (const file of ['legacy-motion.css', 'legacy-motion.js', 'welcome-chat.css', 'welcome-chat.js', 'site-fixes.js', 'cv-fixes.css']) {
   await copyFile(join(source, file), join(destination, file));
 }
 for (const file of ['index.html', '404.html']) {

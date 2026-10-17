@@ -6,6 +6,8 @@ Run `npm run build` to prepare the active homepage, motion files, and optimized 
 
 `legacy/legacy-motion.js` maintains the animated PRITAM wordmark and footer interactions. The hero canvas limits its frame rate, reduces work on small screens, and pauses when offscreen or in hidden tabs. Reduced motion and data saving preferences skip the animation download.
 
+`legacy/welcome-chat.js` and `legacy/welcome-chat.css` provide the glass-style welcome message. It opens five seconds after a visitor loads the homepage, offers three quick replies with automatic follow-ups, and links to the appropriate site section. This is a local interaction; it does not send a message to the site owner.
+
 The older `index.html`, `src/`, and Vite configuration in this folder belong to the superseded redesign and are not part of the active build.
 
 The checked original-bundle patches in `legacy/patch-original.mjs` fix navigation and inactive controls without rebuilding the UI. `legacy/site-fixes.js` provides form validation, safe email draft preparation, labels, and keyboard behavior. The contact form prepares an email draft; it has no mail delivery backend and does not claim to send a message.
