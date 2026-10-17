@@ -73,6 +73,20 @@ const minified = await transformWithEsbuild(sceneCode, 'hero-flow.js', {
 });
 await writeFile(scenePath, minified.code);
 
+await build({
+  configFile: false,
+  publicDir: false,
+  logLevel: 'warn',
+  build: {
+    outDir: join(destination, 'assets'),
+    emptyOutDir: false,
+    target: 'es2020',
+    minify: 'esbuild',
+    lib: { entry: join(source, 'analytics.js'), formats: ['es'], fileName: () => 'analytics.js' },
+    rollupOptions: { output: { inlineDynamicImports: true } },
+  },
+});
+
 for (const file of ['legacy-motion.css', 'legacy-motion.js', 'welcome-chat.css', 'welcome-chat.js', 'site-fixes.js', 'cv-fixes.css']) {
   await copyFile(join(source, file), join(destination, file));
 }
@@ -84,6 +98,7 @@ let cvHtml = secureHtml(await readFile(cvPath, 'utf8'));
 cvHtml = cvHtml.replace(/\s*<link[^>]*href="https:\/\/fonts\.(googleapis|gstatic)\.com[^>]*>/g, '');
 if (!cvHtml.includes('/fonts/fonts.css')) cvHtml = cvHtml.replace('</head>', '  <link rel="stylesheet" href="/fonts/fonts.css">\n</head>');
 if (!cvHtml.includes('/cv-fixes.css')) cvHtml = cvHtml.replace('</head>', '  <link rel="stylesheet" href="/cv-fixes.css">\n</head>');
+if (!cvHtml.includes('/assets/analytics.js')) cvHtml = cvHtml.replace('</head>', '  <script type="module" src="/assets/analytics.js"></script>\n</head>');
 await writeFile(cvPath, cvHtml);
 const apache = (await readFile(join(source, '.htaccess.template'), 'utf8')).replace('__CSP__', contentPolicy);
 await writeFile(join(destination, '.htaccess'), apache);
