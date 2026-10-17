@@ -11,6 +11,7 @@ export function applyQaFixes(code) {
   once('const b=Bi.map(w=>document.getElementById(w.id)),v=window.scrollY+150;for(let w=b.length-1;w>=0;w--){const g=b[w];if(g&&g.offsetTop<=v){i(Bi[w].id);return}}i("")',
     'const b=Bi.map(w=>document.getElementById(w.id)),v=window.scrollY+150;let best=-Infinity,current="";for(let w=0;w<b.length;w++){const g=b[w];if(!g)continue;const top=g.getBoundingClientRect().top+window.scrollY;if(top<=v&&top>=best){best=top;current=Bi[w].id}}i(current)', 'navigation position');
   once('document.getElementById("about")', 'document.getElementById("projects")', 'hero destination');
+  once('c.jsx(Vk,{})', 'null', 'old floating back-to-top control');
   once('const f=m=>{const d=document.querySelector(m);d==null||d.scrollIntoView({behavior:"smooth"}),r(!1)}',
     'const f=m=>{const d=document.querySelector(m);if(d){const p=d.parentElement;if(p.tagName!=="MAIN"){p.style.transition="none";p.style.transform="none";p.style.opacity="1";p.style.filter="none"}d.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"})}r(!1)}', 'navigation reveal timing');
   once('p=()=>{a(s==="dark"?"light":"dark")}', 'p=()=>{a(document.documentElement.classList.contains("dark")?"light":"dark")}', 'theme toggle');

@@ -30,7 +30,6 @@ export function enhanceSite() {
       if (button.getAttribute('aria-label') || button.textContent.trim()) return;
       let label = button.title;
       if (button.querySelector('.lucide-chevron-down')) label = 'Scroll to projects';
-      if (button.querySelector('.lucide-arrow-up')) label = 'Back to top';
       if (button.closest('#testimonials')) {
         if (button.querySelector('.lucide-chevron-left')) label = 'Previous review';
         if (button.querySelector('.lucide-chevron-right')) label = 'Next review';

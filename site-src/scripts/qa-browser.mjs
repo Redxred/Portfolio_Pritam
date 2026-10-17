@@ -172,6 +172,7 @@ try {
   await check('Footer-only back-to-top button returns to the start', async () => {
     assert.equal(await evaluate("document.querySelectorAll('.legacy-footer-back-to-top').length"), 1);
     assert.equal(await evaluate("document.querySelector('.legacy-footer-back-to-top').closest('footer')!==null"), true);
+    assert.equal(await evaluate("document.querySelectorAll('button:has(.lucide-arrow-up)').length"), 0);
     await evaluate('window.scrollTo(0,document.documentElement.scrollHeight)');
     await wait(250);
     await evaluate("document.querySelector('.legacy-footer-back-to-top').click()");
