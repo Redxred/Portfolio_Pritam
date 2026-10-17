@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 
@@ -16,6 +16,7 @@ const results = [];
 const errors = [];
 const consoleErrors = [];
 const requests = [];
+const downloads = [];
 let send;
 async function check(name, fn) {
   try { await fn(); results.push({ name, passed: true }); }
@@ -37,6 +38,7 @@ try {
     if (message.method === 'Runtime.exceptionThrown') errors.push(message.params.exceptionDetails.exception?.description || message.params.exceptionDetails.text);
     if (message.method === 'Log.entryAdded' && message.params.entry.level === 'error') consoleErrors.push(message.params.entry.text);
     if (message.method === 'Network.requestWillBeSent') requests.push({ url: message.params.request.url, method: message.params.request.method });
+    if (message.method === 'Browser.downloadWillBegin') downloads.push(message.params);
     if (!message.id) return;
     const promise = pending.get(message.id); if (!promise) return;
     pending.delete(message.id);
@@ -77,6 +79,11 @@ try {
     assert.deepEqual(await evaluate("[...document.querySelectorAll('main section[id]')].map(s=>s.id)"), ['about', 'projects', 'services', 'facts', 'research', 'testimonials', 'contact']);
     assert.equal(await evaluate('document.images.length'), 1);
     assert.equal(await evaluate("document.querySelector('.hero-backdrop').getAttribute('aria-hidden')"), 'true');
+  });
+  await check('Homepage CV buttons point to the download', async () => {
+    const links = await evaluate("[...document.querySelectorAll('a[download]')].filter(a=>a.textContent.includes('Download CV')).map(a=>({pathname:new URL(a.href).pathname,filename:a.download,target:a.target}))");
+    assert.ok(links.length >= 2);
+    assert.ok(links.every(link => link.pathname === '/download/Pritam_Nath_Dipta_CV.pdf' && link.filename === 'Pritam_Nath_Dipta_CV.pdf' && !link.target));
   });
   await check('Theme initialization is allowed by CSP', async () => { assert.deepEqual(await evaluate('window.__qaCsp'), []); });
   await check('Hidden header cannot receive keyboard focus', async () => { assert.equal(await evaluate("document.querySelector('header').inert"), true); });
@@ -279,6 +286,20 @@ try {
     assert.equal(await evaluate("document.querySelectorAll('[onerror],[onload]').length"), 0);
   });
   await go('/cv.html');
+  await check('CV download saves the supplied PDF', async () => {
+    await send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: artifacts, eventsEnabled: true });
+    const links = await evaluate("({download:document.querySelector('.cv-toolbar a[download]')?.getAttribute('href'),view:document.querySelector('.cv-pdf-view a')?.getAttribute('href')})");
+    assert.equal(links.download, '/download/Pritam_Nath_Dipta_CV.pdf');
+    assert.equal(links.view, '/Pritam_Nath_Dipta_CV.pdf');
+    await evaluate("document.querySelector('.cv-toolbar a[download]').click()");
+    for (let i = 0; i < 30 && downloads.length === 0; i++) await wait(100);
+    assert.equal(downloads[0]?.suggestedFilename, 'Pritam_Nath_Dipta_CV.pdf');
+    const expected = await readFile(new URL('../legacy/assets/Pritam_Nath_Dipta_CV_Updated.pdf', import.meta.url));
+    const savedPath = `${artifacts}/Pritam_Nath_Dipta_CV.pdf`;
+    for (let i = 0; i < 50 && (await stat(savedPath).catch(() => ({ size: 0 }))).size !== expected.length; i++) await wait(100);
+    assert.deepEqual(await readFile(savedPath), expected);
+    assert.equal(await evaluate('new URL(location.href).pathname'), '/cv.html');
+  });
   await evaluate(axeCode);
   const cvAudit = await evaluate("axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}}).then(r=>({violations:r.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary}))}))}))");
   await writeFile(`${artifacts}/axe-cv.json`, JSON.stringify(cvAudit, null, 2));

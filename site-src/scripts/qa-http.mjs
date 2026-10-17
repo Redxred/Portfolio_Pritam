@@ -45,7 +45,19 @@ for (const method of ['POST', 'PUT', 'DELETE', 'TRACE', 'PATCH']) {
 }
 await check('HEAD has no body', async () => { const r = await request('/', 'HEAD'); assert.equal(r.status, 200); assert.equal(r.body.length, 0); assert.ok(Number(r.headers['content-length']) > 0); });
 await check('OPTIONS advertises supported methods', async () => { const r = await request('/', 'OPTIONS'); assert.equal(r.status, 204); assert.equal(r.headers.allow, 'GET, HEAD, OPTIONS'); });
-await check('PDF download', async () => { const r = await request('/Pritam_Nath_Dipta_CV.pdf'); assert.equal(r.status, 200); assert.equal(r.headers['content-type'], 'application/pdf'); assert.equal(r.body.subarray(0, 5).toString(), '%PDF-'); assert.match(r.body.subarray(-128).toString(), /%%EOF/); });
+await check('CV view and download serve the same PDF', async () => {
+  const view = await request('/Pritam_Nath_Dipta_CV.pdf');
+  const download = await request('/download/Pritam_Nath_Dipta_CV.pdf');
+  assert.equal(view.status, 200);
+  assert.equal(download.status, 200);
+  assert.equal(view.headers['content-type'], 'application/pdf');
+  assert.equal(download.headers['content-type'], 'application/pdf');
+  assert.match(download.headers['content-disposition'], /^attachment; filename="Pritam_Nath_Dipta_CV\.pdf"$/);
+  assert.doesNotMatch(view.headers['content-disposition'] || '', /attachment/i);
+  assert.equal(download.body.subarray(0, 5).toString(), '%PDF-');
+  assert.match(download.body.subarray(-128).toString(), /%%EOF/);
+  assert.deepEqual(view.body, download.body);
+});
 await check('Query input is not reflected into HTML', async () => { const value = '<svg onload=alert(1)>'; const r = await request(`/?q=${encodeURIComponent(value)}`); assert.equal(r.status, 200); assert.ok(!r.body.toString().includes(value)); });
 await check('No permissive cross-origin access', async () => { const r = await request('/', 'GET', { Origin: 'https://untrusted.invalid' }); assert.equal(r.headers['access-control-allow-origin'], undefined); });
 await check('No sensitive data in response headers', async () => { const r = await request('/'); assert.equal(r.headers['x-powered-by'], undefined); assert.equal(r.headers['set-cookie'], undefined); });

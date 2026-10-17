@@ -2,3 +2,5 @@
 .cv-eyebrow, .cv-contact > span { color: #376b4d; }
 .cv-section h2 > span { color: #39724f; }
 .cv-certifications li > span { color: #526b5b; }
+.cv-pdf-view { margin: 18px 0 0; font-size: 12px; font-weight: 700; }
+@media print { .cv-pdf-view { display: none; } }

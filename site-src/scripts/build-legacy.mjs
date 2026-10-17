@@ -38,7 +38,10 @@ for (const file of await readdir(join(source, 'fonts'))) {
 for (const file of ['profile-optimized.webp', 'hero-optimized.webp']) {
   await copyFile(join(source, 'assets', file), join(destination, 'assets', file));
 }
-await copyFile(join(source, 'assets/Pritam_Nath_Dipta_CV.pdf'), join(destination, 'Pritam_Nath_Dipta_CV.pdf'));
+const cvPdf = join(source, 'assets/Pritam_Nath_Dipta_CV_Updated.pdf');
+await copyFile(cvPdf, join(destination, 'Pritam_Nath_Dipta_CV.pdf'));
+await mkdir(join(destination, 'download'), { recursive: true });
+await copyFile(cvPdf, join(destination, 'download/Pritam_Nath_Dipta_CV.pdf'));
 for (const file of ['favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'social-card.png', 'robots.txt', 'sitemap.xml', 'llms.txt', '641baf96f1d35bf3322be08a41073b28.txt']) {
   await copyFile(fileURLToPath(new URL(`../public/${file}`, import.meta.url)), join(destination, file));
 }
@@ -103,12 +106,14 @@ if (dirname(resolve(vercelOutput)) !== dirname(resolve(source)) || basename(verc
 }
 await rm(vercelOutput, { recursive: true, force: true });
 await mkdir(join(vercelOutput, 'assets'), { recursive: true });
+await mkdir(join(vercelOutput, 'download'), { recursive: true });
 for (const file of ['index.html', 'cv.html', '404.html', 'cv.css', 'cv.js', 'cv-fixes.css', 'legacy-motion.css', 'legacy-motion.js', 'welcome-chat.css', 'welcome-chat.js', 'site-fixes.js', 'seo-fallback.css', 'Pritam_Nath_Dipta_CV.pdf', 'favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'social-card.png', 'robots.txt', 'sitemap.xml', 'llms.txt', '641baf96f1d35bf3322be08a41073b28.txt']) {
   await copyFile(join(destination, file), join(vercelOutput, file));
 }
 for (const file of ['index-motion.js', 'index-local.css', 'hero-flow.js', 'analytics.js', 'hero-optimized.webp', 'profile-optimized.webp']) {
   await copyFile(join(destination, 'assets', file), join(vercelOutput, 'assets', file));
 }
+await copyFile(join(destination, 'download/Pritam_Nath_Dipta_CV.pdf'), join(vercelOutput, 'download/Pritam_Nath_Dipta_CV.pdf'));
 await cp(join(destination, 'fonts'), join(vercelOutput, 'fonts'), { recursive: true });
 
 console.log('Website ready in ../pritamnathdipta.online/ and ./dist/');

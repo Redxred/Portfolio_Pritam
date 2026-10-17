@@ -47,8 +47,10 @@ const server = createServer(async (req, res) => {
     const info = await stat(path);
     if (info.isDirectory()) { finish(403, 'Directory listing is disabled'); return; }
     const modified = info.mtime.toUTCString();
+    const isCvPdf = pathname === '/Pritam_Nath_Dipta_CV.pdf' || pathname === '/download/Pritam_Nath_Dipta_CV.pdf';
     res.setHeader('Last-Modified', modified);
-    res.setHeader('Cache-Control', ['.html', '.js', '.css'].includes(extname(path)) ? 'no-cache' : 'public, max-age=3600');
+    res.setHeader('Cache-Control', isCvPdf || ['.html', '.js', '.css'].includes(extname(path)) ? 'no-cache' : 'public, max-age=3600');
+    if (pathname === '/download/Pritam_Nath_Dipta_CV.pdf') res.setHeader('Content-Disposition', 'attachment; filename="Pritam_Nath_Dipta_CV.pdf"');
     if (req.headers['if-modified-since'] === modified) { res.writeHead(304); res.end(); return; }
     res.writeHead(200, { 'Content-Type': types[extname(path)] || 'application/octet-stream', 'Content-Length': info.size });
     res.end(req.method === 'HEAD' ? undefined : await readFile(path));
