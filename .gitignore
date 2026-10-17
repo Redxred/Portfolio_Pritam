@@ -1,4 +1,5 @@
 site-src/node_modules/
+site-src/dist/
 qa-chrome-*/
 qa-*.png
 .env

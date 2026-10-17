@@ -1,6 +1,6 @@
-import { access, copyFile, readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
+import { access, copyFile, cp, readFile, writeFile, mkdir, readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 import { build, transformWithEsbuild } from 'vite';
 import { applyQaFixes } from '../legacy/patch-original.mjs';
 import { contentPolicy, secureHtml } from '../legacy/security-policy.mjs';
@@ -85,4 +85,12 @@ await writeFile(cvPath, cvHtml);
 const apache = (await readFile(join(source, '.htaccess.template'), 'utf8')).replace('__CSP__', contentPolicy);
 await writeFile(join(destination, '.htaccess'), apache);
 
-console.log('Original website, animated footer, and flowing hero background are ready in ../pritamnathdipta.online/');
+// Vercel serves site-src/dist; Apache deployments still use the sibling folder.
+const vercelOutput = fileURLToPath(new URL('../dist/', import.meta.url));
+await cp(destination, vercelOutput, {
+  recursive: true,
+  force: true,
+  filter: path => basename(path) !== '.htaccess',
+});
+
+console.log('Website ready in ../pritamnathdipta.online/ and ./dist/');
