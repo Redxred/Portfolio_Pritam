@@ -93,12 +93,48 @@ export function initHeroFlow(canvas) {
     context.shadowBlur = 0;
   };
 
+  const drawCircuit = time => {
+    if (width < 760) return;
+    const color = light ? '0, 120, 149' : '36, 218, 233';
+    for (const side of [0, 1]) {
+      for (let lane = 0; lane < 3; lane++) {
+        const edge = side ? width : 0;
+        const direction = side ? -1 : 1;
+        const reach = Math.min(215, width * .17);
+        const y = height * (.25 + lane * .16);
+        const points = [[edge, y], [edge + direction * reach * .5, y],
+          [edge + direction * reach * .5, y + 30], [edge + direction * reach, y + 30]];
+        context.beginPath();
+        points.forEach(([x, py], i) => i ? context.lineTo(x, py) : context.moveTo(x, py));
+        context.strokeStyle = `rgba(${color}, ${light ? .13 : .17})`;
+        context.lineWidth = 1;
+        context.stroke();
+        let distance = ((time * 14 + lane * 62 + side * 39) % (reach + 30));
+        for (let i = 1; i < points.length; i++) {
+          const [x1, y1] = points[i - 1];
+          const [x2, y2] = points[i];
+          const length = Math.hypot(x2 - x1, y2 - y1);
+          if (distance <= length) {
+            const ratio = distance / length;
+            context.fillStyle = `rgba(${color}, .55)`;
+            context.fillRect(x1 + (x2 - x1) * ratio - 1.5, y1 + (y2 - y1) * ratio - 1.5, 3, 3);
+            break;
+          }
+          distance -= length;
+        }
+        const [endX, endY] = points.at(-1);
+        context.strokeRect(endX - 3, endY - 3, 6, 6);
+      }
+    }
+  };
+
   const draw = time => {
     context.clearRect(0, 0, width, height);
     pointerX += (pointerTargetX - pointerX) * .3;
     pointerY += (pointerTargetY - pointerY) * .3;
     pointerStrength += (pointerTargetStrength - pointerStrength) * .32;
     drawPointerGlow();
+    drawCircuit(time);
     const mobile = width < 640;
     for (let i = 0; i < (mobile ? 4 : 9); i++) drawLine(i, 9, time, true);
     for (let i = 0; i < (mobile ? 14 : 23); i++) drawLine(i, mobile ? 14 : 23, time);

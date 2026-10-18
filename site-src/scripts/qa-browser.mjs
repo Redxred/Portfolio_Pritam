@@ -77,7 +77,7 @@ try {
   await go('/');
   await check('Homepage and original sections render', async () => {
     assert.deepEqual(await evaluate("[...document.querySelectorAll('main section[id]')].map(s=>s.id)"), ['about', 'projects', 'services', 'facts', 'research', 'testimonials', 'contact']);
-    assert.equal(await evaluate('document.images.length'), 1);
+    assert.equal(await evaluate('document.querySelector("main section:first-child").querySelectorAll("img").length'), 1);
     assert.equal(await evaluate("document.querySelector('.hero-backdrop').getAttribute('aria-hidden')"), 'true');
   });
   await check('Homepage CV buttons point to the download', async () => {
@@ -231,6 +231,24 @@ try {
     });
     await evaluate('window.scrollTo(0,document.documentElement.scrollHeight)'); await wait(500);
     await screenshot(`${theme}-footer`);
+    if (theme === 'dark') await check('Footer sequence animates without the removed character', async () => {
+      assert.equal(await evaluate("document.querySelectorAll('footer img, footer image, .legacy-footer-walker').length"), 0);
+      const signal = "getComputedStyle(document.querySelector('.security-footer-sequence'),'::after').transform";
+      const first = await evaluate(signal);
+      await wait(230);
+      assert.notEqual(first, await evaluate(signal));
+      assert.equal(await evaluate("[...document.querySelectorAll('.security-atmosphere,.security-card-signal,.security-action-sheen')].every(e=>getComputedStyle(e).pointerEvents==='none')"), true);
+    });
+    if (theme === 'dark') for (const section of ['about', 'services', 'projects']) {
+      await evaluate(`document.getElementById('${section}').scrollIntoView({behavior:'instant'})`);
+      await wait(850);
+      await screenshot(`motion-${section}`);
+      if (section === 'about') {
+        await evaluate("document.querySelector('.core-technologies').scrollIntoView({behavior:'instant',block:'center'})");
+        await wait(550);
+        await screenshot('core-technologies');
+      }
+    }
     // Trigger every reveal once before auditing all of the page's content.
     const height = await evaluate('document.documentElement.scrollHeight');
     for (let y = 0; y < height; y += 650) { await evaluate(`window.scrollTo(0,${y})`); await wait(65); }
@@ -279,6 +297,8 @@ try {
     await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] }); await wait(450);
     assert.equal(await evaluate("document.querySelector('.hero-flow-canvas').dataset.motionState"), 'paused');
     assert.equal(await evaluate("getComputedStyle(document.querySelector('.legacy-footer-letter')).animationName"), 'none');
+    assert.equal(await evaluate("getComputedStyle(document.querySelector('.security-footer-sequence'),'::after').animationName"), 'none');
+    assert.equal(await evaluate("getComputedStyle(document.querySelector('.security-atmosphere'),'::after').animationName"), 'none');
   });
   await check('Reduced motion skips the hero animation download on reload', async () => {
     await go('/');
