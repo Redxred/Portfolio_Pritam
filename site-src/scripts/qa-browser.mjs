@@ -161,7 +161,7 @@ try {
   await check('Footer ownership and unused social links', async () => {
     assert.equal(await evaluate("document.querySelectorAll('a[aria-label=Twitter]').length"), 0);
     const footerText = await evaluate("document.querySelector('footer').textContent");
-    assert.match(footerText, /HacknFix\. All rights reserved\./);
+    assert.match(footerText, /Pritam\. All rights reserved\./);
     assert.match(footerText, /Developed by Pritam/);
     assert.doesNotMatch(footerText, /blackX/);
   });
@@ -227,7 +227,9 @@ try {
   });
   await check('Footer name draws in and follows the cursor', async () => {
     const signature = '.legacy-footer-signature';
-    assert.equal(await evaluate(`document.querySelector('${signature}').getAttribute('aria-label')`), 'Pritam Nath Dipta');
+    assert.equal(await evaluate(`document.querySelector('${signature}').getAttribute('aria-label')`), 'Pritam');
+    assert.equal(await evaluate("document.querySelector('.legacy-footer-brand strong').textContent"), 'Pritam');
+    assert.equal(await evaluate("[...document.querySelectorAll('.legacy-footer-signature text')].every(text => text.textContent === 'Pritam')"), true);
     await evaluate(`document.querySelector('${signature}').scrollIntoView({behavior:'instant',block:'center'})`);
     await wait(250);
     assert.equal(await evaluate(`document.querySelector('${signature}').classList.contains('is-visible')`), true);
@@ -417,6 +419,7 @@ try {
   });
   await go('/blog.html');
   await check('Blog mobile layout and real post links', async () => {
+    assert.equal(await evaluate("document.querySelector('.blog-footer .blog-brand').textContent.trim()"), 'Pritam');
     assert.match(await evaluate('document.querySelector("h1").textContent'), /Ideas worth taking further/);
     assert.equal(await evaluate("document.querySelectorAll('.blog-card').length"), 4);
     assert.equal(await evaluate("[...document.querySelectorAll('.blog-card-link')].every(a=>new URL(a.href).hostname==='www.linkedin.com')"), true);

@@ -140,6 +140,8 @@ function enhanceFooter(footer) {
   const container = footer.firstElementChild;
   const row = container.firstElementChild;
   row.classList.add('legacy-footer-row');
+  const copyright = row.querySelector('p');
+  if (copyright) copyright.textContent = `© ${new Date().getFullYear()} Pritam. All rights reserved.`;
   const socials = row.children[1];
   socials?.classList.add('legacy-footer-socials');
   socials?.querySelectorAll('a[aria-label]').forEach(link => {
@@ -172,7 +174,7 @@ function enhanceFooter(footer) {
   const lower = document.createElement('div');
   lower.className = 'legacy-footer-lower';
   lower.innerHTML = `
-    <div class="legacy-footer-brand"><span class="legacy-footer-monogram" aria-hidden="true">PN<span>.</span></span><span><strong>Pritam Nath Dipta</strong><small>Cybersecurity · Software QA · IT Support</small></span></div>
+    <div class="legacy-footer-brand"><span class="legacy-footer-monogram" aria-hidden="true">P<span>.</span></span><span><strong>Pritam</strong><small>Cybersecurity · Software QA · IT Support</small></span></div>
     <nav class="legacy-footer-nav" aria-label="Footer navigation"><a href="#about">About</a><a href="#projects">Projects</a><a href="#research">Research</a><a href="/blog.html">Blog</a><a href="#contact">Contact</a></nav>`;
   const backToTop = document.createElement('button');
   backToTop.type = 'button';
@@ -186,26 +188,26 @@ function enhanceFooter(footer) {
   const signature = document.createElement('div');
   signature.className = 'legacy-footer-signature';
   signature.setAttribute('role', 'img');
-  signature.setAttribute('aria-label', 'Pritam Nath Dipta');
+  signature.setAttribute('aria-label', 'Pritam');
   signature.innerHTML = `
-    <svg viewBox="0 0 1100 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <svg viewBox="0 0 1100 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
       <defs>
         <linearGradient id="footer-signature-colors" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1100" y2="0">
           <stop offset="0%" stop-color="#eab308"/><stop offset="25%" stop-color="#ef4444"/>
           <stop offset="50%" stop-color="#3b82f6"/><stop offset="75%" stop-color="#06b6d4"/>
           <stop offset="100%" stop-color="#8b5cf6"/>
         </linearGradient>
-        <radialGradient id="footer-signature-reveal" gradientUnits="userSpaceOnUse" cx="550" cy="140" r="220">
+        <radialGradient id="footer-signature-reveal" gradientUnits="userSpaceOnUse" cx="550" cy="120" r="220">
           <stop offset="0%" stop-color="white"/><stop offset="65%" stop-color="white"/>
           <stop offset="100%" stop-color="black"/>
         </radialGradient>
-        <mask id="footer-signature-mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" mask-type="luminance" x="0" y="0" width="1100" height="280">
-          <rect width="1100" height="280" fill="url(#footer-signature-reveal)"/>
+        <mask id="footer-signature-mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" mask-type="luminance" x="0" y="0" width="1100" height="240">
+          <rect width="1100" height="240" fill="url(#footer-signature-reveal)"/>
         </mask>
       </defs>
-      <g class="footer-signature-base"><text x="550" y="111">Pritam Nath</text><text x="550" y="245">Dipta</text></g>
-      <g class="footer-signature-trace"><text x="550" y="111">Pritam Nath</text><text x="550" y="245">Dipta</text></g>
-      <g class="footer-signature-color" mask="url(#footer-signature-mask)"><text x="550" y="111">Pritam Nath</text><text x="550" y="245">Dipta</text></g>
+      <g class="footer-signature-base"><text x="550" y="180">Pritam</text></g>
+      <g class="footer-signature-trace"><text x="550" y="180">Pritam</text></g>
+      <g class="footer-signature-color" mask="url(#footer-signature-mask)"><text x="550" y="180">Pritam</text></g>
     </svg>`;
   container.prepend(closing, signature, lower);
   initFooterSignature(signature);
@@ -267,7 +269,7 @@ function initFooterSignature(signature) {
   if (reducedMotion.matches || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
   const reveal = signature.querySelector('#footer-signature-reveal');
   let x = 550;
-  let y = 140;
+  let y = 120;
   let targetX = x;
   let targetY = y;
   let frame = 0;
@@ -282,7 +284,7 @@ function initFooterSignature(signature) {
   const pointAt = event => {
     const rect = signature.querySelector('svg').getBoundingClientRect();
     targetX = Math.max(0, Math.min(1100, (event.clientX - rect.left) * 1100 / rect.width));
-    targetY = Math.max(0, Math.min(280, (event.clientY - rect.top) * 280 / rect.height));
+    targetY = Math.max(0, Math.min(240, (event.clientY - rect.top) * 240 / rect.height));
     if (!frame) frame = requestAnimationFrame(move);
   };
   signature.addEventListener('pointerenter', event => {
@@ -293,7 +295,7 @@ function initFooterSignature(signature) {
   signature.addEventListener('pointerleave', () => {
     signature.classList.remove('is-hovered');
     targetX = 550;
-    targetY = 140;
+    targetY = 120;
     if (!frame) frame = requestAnimationFrame(move);
   });
 }
