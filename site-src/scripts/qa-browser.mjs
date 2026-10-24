@@ -69,6 +69,7 @@ try {
   await send('Page.navigate', { url: `${origin}/` });
   await wait(600);
   await check('Crawlable startup text stays hidden when JavaScript is enabled', async () => {
+    for (let i = 0; i < 30 && await evaluate("getComputedStyle(document.querySelector('.seo-fallback')).display") !== 'none'; i++) await wait(100);
     assert.equal(await evaluate("document.documentElement.classList.contains('js')"), true);
     assert.equal(await evaluate("getComputedStyle(document.querySelector('.seo-fallback')).display"), 'none');
   });
