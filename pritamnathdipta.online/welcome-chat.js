@@ -154,12 +154,17 @@ export function initWelcomeChat() {
     close();
   });
 
+  const showWelcome = () => {
+    // Keep the first mobile view clear; the contact options remain one tap away.
+    if (matchMedia('(max-width: 480px)').matches) launcher.hidden = false;
+    else open();
+  };
   setTimeout(() => {
-    if (!document.hidden) open();
+    if (!document.hidden) showWelcome();
     else document.addEventListener('visibilitychange', function showWhenVisible() {
       if (document.hidden) return;
       document.removeEventListener('visibilitychange', showWhenVisible);
-      open();
+      showWelcome();
     });
   }, 5000);
 }

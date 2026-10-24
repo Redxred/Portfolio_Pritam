@@ -6,7 +6,7 @@ Run `npm run build` to prepare the active homepage, CV, motion files, and optimi
 
 `legacy/legacy-motion.js` builds the contact-focused footer and its back-to-top button. `legacy/footer-redesign.css` styles the footer illustration, orbit, and entrance motion. `legacy/security-motion.js` and its stylesheet add decorative circuit grids, scan sweeps, card corners, button highlights, and typography accents without replacing the original layout. Background and footer motion pause offscreen or in hidden tabs, and respect reduced motion. The Three.js hero scene limits its frame rate, reduces detail on small screens, and skips downloading when reduced motion or data saving is enabled.
 
-`legacy/welcome-chat.js` and `legacy/welcome-chat.css` provide the glass-style welcome message. It opens five seconds after a visitor loads the homepage, offers three quick replies with automatic follow-ups, and links to the appropriate site section. After closing it, visitors can use the compact contact icon to open a menu for the message, WhatsApp, or email. Quick replies are local; they do not send a message to the site owner.
+`legacy/welcome-chat.js` and `legacy/welcome-chat.css` provide the glass-style welcome message. On desktop it opens five seconds after a visitor loads the homepage; on mobile it starts as a compact contact icon. It offers three quick replies with automatic follow-ups and links to the appropriate site section. After closing it, visitors can use the contact icon to open a menu for the message, WhatsApp, or email. Quick replies are local; they do not send a message to the site owner.
 
 The unused alternate redesign and old asset bundles were removed. The active CV source is `legacy/cv.html`, with `legacy/cv.css` and `legacy/cv.js`.
 

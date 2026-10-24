@@ -260,14 +260,35 @@ try {
     await writeFile(`${artifacts}/axe-${theme}.json`, JSON.stringify(audit, null, 2));
     await check(`${theme} accessibility audit`, async () => { assert.equal(audit.violations.length, 0, JSON.stringify(audit.violations.map(v => ({ id: v.id, nodes: v.nodes.length })))); });
   }
-  for (const width of [320, 390, 768, 1024, 1440]) {
+  for (const width of [320, 360, 390, 430, 768, 1024, 1440]) {
     await send('Emulation.setDeviceMetricsOverride', { width, height: 844, deviceScaleFactor: 1, mobile: width < 768 });
     await send('Emulation.setTouchEmulationEnabled', { enabled: width < 768 });
     await wait(200);
+    if (width === 320) {
+      await go('/'); await wait(1400);
+      await check('Mobile welcome stays compact until opened', async () => {
+        assert.equal(await evaluate("document.querySelector('.welcome-chat-card').hidden"), true);
+        assert.equal(await evaluate("document.querySelector('.welcome-chat-launcher').hidden"), false);
+      });
+      await check('Small screen header name stays on one line', async () => {
+        const layout = await evaluate("(()=>{const brand=document.querySelector('#root header .container > button:first-child').getBoundingClientRect();const theme=[...document.querySelectorAll('#root header button[aria-label^=\"Switch to\"]')].map(e=>e.getBoundingClientRect()).find(r=>r.width);return {height:brand.height,right:brand.right,themeLeft:theme?.left}})()");
+        assert.ok(layout.height < 30 && layout.right + 4 < layout.themeLeft, JSON.stringify(layout));
+      });
+    }
     await check(`Responsive width ${width}`, async () => {
       assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'), true);
       assert.equal(await evaluate("(()=>{const r=document.querySelector('.legacy-footer-showcase').getBoundingClientRect();return r.left>=0&&r.right<=innerWidth})()"), true);
     });
+    if (width === 320 || width === 430) {
+      await evaluate('window.scrollTo(0,0)'); await wait(250);
+      await screenshot(`mobile-${width}-hero`);
+      await evaluate('window.scrollTo(0,document.documentElement.scrollHeight)'); await wait(900);
+      await screenshot(`mobile-${width}-footer`);
+      if (width === 320) await check('Floating contact control clears footer links', async () => {
+        const overlap = await evaluate("(()=>{const a=[...document.querySelectorAll('.legacy-footer-socials a')].find(e=>e.getAttribute('aria-label')==='Email').getBoundingClientRect();const b=document.querySelector('.welcome-chat-launcher').getBoundingClientRect();return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top})()");
+        assert.equal(overlap, false);
+      });
+    }
     if (width === 390) {
       await evaluate('window.scrollTo(0,0)'); await wait(300);
       await screenshot('mobile-hero');
@@ -280,6 +301,11 @@ try {
       await evaluate("document.querySelector('.welcome-chat-close').click()");
       await evaluate('window.scrollTo(0,document.documentElement.scrollHeight)'); await wait(200);
       await screenshot('mobile-footer');
+      for (const sectionId of ['about', 'projects', 'services', 'research', 'testimonials', 'contact']) {
+        await evaluate(`document.getElementById('${sectionId}').scrollIntoView({behavior:'instant'})`);
+        await wait(200);
+        await screenshot(`mobile-${sectionId}`);
+      }
       await check('Mobile menu opens and Escape closes it', async () => {
         await evaluate("document.querySelector('button[aria-label=\"Open menu\"]').click()"); await wait(100);
         assert.equal(await evaluate("document.querySelector('button[aria-expanded=true]')!==null"), true);

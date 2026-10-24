@@ -1,5 +1,15 @@
-/* Motion enhancements for the existing site and its footer wordmark. */
+/* Motion and responsive enhancements for the existing site. */
 #root header { background-color: hsl(var(--background)); }
+@media (max-width: 360px) {
+  #root header .container { padding-inline: 16px; gap: 8px; }
+  #root header .container > button:first-child {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 16px;
+    line-height: 1.2;
+    letter-spacing: -.045em;
+  }
+}
 section[id], #main-content { scroll-margin-top: 96px; }
 :is(a, button, input, textarea):focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
 .dark .text-secondary { color: hsl(270 90% 75%); }

@@ -266,6 +266,18 @@
   .legacy-footer-brand small { font-size: 9px; }
   .legacy-footer-nav { gap: 14px; }
 }
+@media (max-width: 360px) {
+  .legacy-footer-copy { padding: 22px 22px 0; }
+  .legacy-footer-copy h2 { font-size: 2.1rem; }
+  .legacy-footer-actions { gap: 8px; margin-top: 16px; }
+  .legacy-footer-actions a { min-height: 42px; }
+  .legacy-footer-visual { min-height: 165px; max-height: 180px; }
+  .legacy-footer-visual img { width: min(61%, 215px); max-height: 180px; }
+  .legacy-footer-orbit { width: min(62%, 230px); }
+  .legacy-footer-orbit-inner { width: min(48%, 175px); }
+  .legacy-footer-lower { gap: 12px; padding: 16px 0 13px; }
+  .legacy-motion-footer .legacy-footer-row { padding-top: 13px; }
+}
 @media (prefers-reduced-motion: reduce) {
   .legacy-motion-footer .legacy-footer-showcase::after,
   .legacy-motion-footer .legacy-footer-kicker span,
