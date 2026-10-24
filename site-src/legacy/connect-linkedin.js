@@ -2,12 +2,25 @@ const form = document.querySelector('#connect-form');
 const message = document.querySelector('#connect-message');
 const status = new URLSearchParams(location.search).get('status');
 const messages = {
-  connected: 'LinkedIn connected. Your public posts are now synced to the Blog.',
   'sync-error': 'LinkedIn connected, but the first post sync failed. Check the app permissions and person URN, then run the scheduled sync again.',
   denied: 'LinkedIn authorization was cancelled. You can try again.',
   error: 'The connection could not be completed. Check the LinkedIn app configuration and try again.',
 };
 if (messages[status]) message.textContent = messages[status];
+if (status === 'connected') {
+  message.textContent = 'Checking the saved LinkedIn feed…';
+  fetch(`/api/linkedin/posts?verify=${Date.now()}`, { cache: 'no-store', headers: { Accept: 'application/json' } })
+    .then(response => {
+      if (!response.ok) throw new Error('Feed check failed');
+      return response.json();
+    })
+    .then(feed => {
+      message.textContent = feed?.updatedAt
+        ? 'LinkedIn connected. Your public posts are now synced to the Blog.'
+        : 'No LinkedIn connection was saved. Enter your private key below and complete the authorization on LinkedIn.';
+    })
+    .catch(() => { message.textContent = 'Could not verify the LinkedIn connection. Please try again.'; });
+}
 
 form.addEventListener('submit', async event => {
   event.preventDefault();
