@@ -1,6 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "outputDirectory": "dist",
+  "functions": {
+    "api/linkedin/callback.js": { "maxDuration": 60 },
+    "api/linkedin/refresh.js": { "maxDuration": 60 }
+  },
+  "crons": [{ "path": "/api/linkedin/refresh", "schedule": "0 3 * * *" }],
   "headers": [
     {
       "source": "/(.*)",

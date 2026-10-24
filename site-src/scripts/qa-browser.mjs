@@ -80,6 +80,7 @@ try {
     assert.deepEqual(await evaluate("[...document.querySelectorAll('main section[id]')].map(s=>s.id)"), ['about', 'projects', 'services', 'facts', 'research', 'testimonials', 'contact']);
     assert.equal(await evaluate('document.querySelector("main section:first-child").querySelectorAll("img").length'), 1);
     assert.equal(await evaluate("document.querySelector('.hero-backdrop').getAttribute('aria-hidden')"), 'true');
+    assert.equal(await evaluate("[...document.querySelectorAll('header button')].some(b=>b.textContent.trim()==='Blog')"), true);
   });
   await check('Homepage CV buttons point to the download', async () => {
     const links = await evaluate("[...document.querySelectorAll('a[download]')].filter(a=>a.textContent.includes('Download CV')).map(a=>({pathname:new URL(a.href).pathname,filename:a.download,target:a.target}))");
@@ -414,6 +415,32 @@ try {
     await send('Emulation.setDeviceMetricsOverride', { width: 320, height: 844, deviceScaleFactor: 1, mobile: true }); await wait(200);
     assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'), true);
   });
+  await go('/blog.html');
+  await check('Blog mobile layout and real post links', async () => {
+    assert.match(await evaluate('document.querySelector("h1").textContent'), /Ideas worth taking further/);
+    assert.equal(await evaluate("document.querySelectorAll('.blog-card').length"), 4);
+    assert.equal(await evaluate("[...document.querySelectorAll('.blog-card-link')].every(a=>new URL(a.href).hostname==='www.linkedin.com')"), true);
+    assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'), true);
+    await screenshot('blog-mobile-hero');
+    await evaluate("document.querySelector('#posts').scrollIntoView({behavior:'instant'})"); await wait(150);
+    await screenshot('blog-mobile-posts');
+  });
+  await check('Blog topic filters show the matching posts', async () => {
+    await evaluate("document.querySelector('[data-filter=\"Software QA\"]').click()");
+    assert.equal(await evaluate("[...document.querySelectorAll('.blog-card')].filter(card=>!card.hidden).length"), 1);
+    assert.equal(await evaluate("document.querySelector('[data-filter=\"Software QA\"]').getAttribute('aria-pressed')"), 'true');
+    await evaluate("document.querySelector('[data-filter=all]').click()");
+    assert.equal(await evaluate("[...document.querySelectorAll('.blog-card')].filter(card=>!card.hidden).length"), 4);
+  });
+  await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
+  await go('/blog.html');
+  await screenshot('blog-desktop-hero');
+  await evaluate("document.querySelector('#posts').scrollIntoView({behavior:'instant'})"); await wait(150);
+  await screenshot('blog-desktop-posts');
+  await evaluate(axeCode);
+  const blogAudit = await evaluate("axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}}).then(r=>({violations:r.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>({target:n.target,summary:n.failureSummary}))}))}))");
+  await writeFile(`${artifacts}/axe-blog.json`, JSON.stringify(blogAudit, null, 2));
+  await check('Blog accessibility audit', async () => { assert.equal(blogAudit.violations.length, 0, JSON.stringify(blogAudit.violations.map(v => ({ id: v.id, nodes: v.nodes.length })))); });
   await check('No JavaScript runtime errors', async () => { assert.deepEqual(errors, []); });
   await check('No unexpected application console errors', async () => { assert.deepEqual(consoleErrors.filter(text => !text.startsWith('Executing inline script violates')), []); });
   // The deliberate inline-script attack above is expected to generate one CSP error.

@@ -173,7 +173,7 @@ function enhanceFooter(footer) {
   lower.className = 'legacy-footer-lower';
   lower.innerHTML = `
     <div class="legacy-footer-brand"><span class="legacy-footer-monogram" aria-hidden="true">PN<span>.</span></span><span><strong>Pritam Nath Dipta</strong><small>Cybersecurity · Software QA · IT Support</small></span></div>
-    <nav class="legacy-footer-nav" aria-label="Footer navigation"><a href="#about">About</a><a href="#projects">Projects</a><a href="#research">Research</a><a href="#contact">Contact</a></nav>`;
+    <nav class="legacy-footer-nav" aria-label="Footer navigation"><a href="#about">About</a><a href="#projects">Projects</a><a href="#research">Research</a><a href="/blog.html">Blog</a><a href="#contact">Contact</a></nav>`;
   const backToTop = document.createElement('button');
   backToTop.type = 'button';
   backToTop.className = 'legacy-footer-back-to-top';

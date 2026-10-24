@@ -9,6 +9,8 @@ export function applyQaFixes(code) {
   const cvLink = 'href:"/Pritam_Nath_Dipta_CV.pdf",download:"Pritam_Nath_Dipta_CV.pdf",target:"_blank",rel:"noopener noreferrer"';
   if (code.split(cvLink).length !== 4) throw new Error('Expected three original CV download links');
   code = code.replaceAll(cvLink, 'href:"/download/Pritam_Nath_Dipta_CV.pdf",download:"Pritam_Nath_Dipta_CV.pdf"');
+  once('{label:"Research",href:"#research",id:"research"},{label:"Contact",href:"#contact",id:"contact"}',
+    '{label:"Research",href:"#research",id:"research"},{label:"Blog",href:"/blog.html",id:"blog"},{label:"Contact",href:"#contact",id:"contact"}', 'blog navigation');
   // Replace only the decorative hero backdrop; preserve every foreground element.
   once('c.jsxs("div",{className:"absolute inset-0 z-0",children:[c.jsx("img",{src:gk,alt:"Cyber background",className:"w-full h-full object-cover opacity-30"}),c.jsx("div",{className:"absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background"})]})',
     'c.jsxs("div",{className:"hero-backdrop","aria-hidden":!0,children:[c.jsx("div",{className:"hero-flow-glow hero-flow-glow-cyan"}),c.jsx("div",{className:"hero-flow-glow hero-flow-glow-violet"}),c.jsx("canvas",{className:"hero-flow-canvas"})]})', 'hero backdrop');
@@ -17,7 +19,7 @@ export function applyQaFixes(code) {
   once('document.getElementById("about")', 'document.getElementById("projects")', 'hero destination');
   once('c.jsx(Vk,{})', 'null', 'old floating back-to-top control');
   once('const f=m=>{const d=document.querySelector(m);d==null||d.scrollIntoView({behavior:"smooth"}),r(!1)}',
-    'const f=m=>{const d=document.querySelector(m);if(d){const p=d.parentElement;if(p.tagName!=="MAIN"){p.style.transition="none";p.style.transform="none";p.style.opacity="1";p.style.filter="none"}d.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"})}r(!1)}', 'navigation reveal timing');
+    'const f=m=>{if(m[0]==="/"){window.location.assign(m);r(!1);return}const d=document.querySelector(m);if(d){const p=d.parentElement;if(p.tagName!=="MAIN"){p.style.transition="none";p.style.transform="none";p.style.opacity="1";p.style.filter="none"}d.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"})}r(!1)}', 'navigation reveal timing');
   once('p=()=>{a(s==="dark"?"light":"dark")}', 'p=()=>{a(document.documentElement.classList.contains("dark")?"light":"dark")}', 'theme toggle');
   code = code.replaceAll('s==="dark"?c.jsx(Jd', 'document.documentElement.classList.contains("dark")?c.jsx(Jd');
   once('n=r=>{r.preventDefault(),tw.success("Message sent! I\'ll get back to you soon."),t({name:"",email:"",message:""})}',

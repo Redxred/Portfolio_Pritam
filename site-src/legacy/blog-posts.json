@@ -1,0 +1,34 @@
+[
+  {
+    "title": "Three browser extensions that catch bugs early",
+    "category": "Software QA",
+    "summary": "A practical look at how Wappalyzer, axe DevTools, and ModHeader speed up exploratory testing and help surface issues before a full regression run.",
+    "url": "https://www.linkedin.com/posts/pritam-nath-dipta_softwarequalityassurance-sqa-activity-7504964196967690240-ut_b",
+    "kind": "LinkedIn post",
+    "mark": "QA"
+  },
+  {
+    "title": "A six-month roadmap into cybersecurity",
+    "category": "Cybersecurity",
+    "summary": "A month-by-month learning path covering foundations, hands-on labs, security specializations, and building a portfolio of real work.",
+    "url": "https://www.linkedin.com/posts/pritam-nath-dipta_%F0%9D%97%96%F0%9D%98%86%F0%9D%97%AF%F0%9D%97%B2%F0%9D%97%BF%F0%9D%98%80%F0%9D%97%B2%F0%9D%97%B0%F0%9D%98%82%F0%9D%97%BF%F0%9D%97%B6%F0%9D%98%81%F0%9D%98%86-%F0%9D%97%B6%F0%9D%97%BB-%F0%9D%97%9D%F0%9D%98%82%F0%9D%98%80%F0%9D%98%81-activity-7339624144314998784-q9qZ",
+    "kind": "LinkedIn post",
+    "mark": "SEC"
+  },
+  {
+    "title": "Social engineering: the human side of security",
+    "category": "Cybersecurity",
+    "summary": "An article on how deceptive social interactions can expose confidential information and why awareness belongs in a security program.",
+    "url": "https://www.linkedin.com/pulse/social-engineering-pritam-nath-dipta-qrl1c",
+    "kind": "LinkedIn article",
+    "mark": "HUMAN"
+  },
+  {
+    "title": "What is Shodan?",
+    "category": "Research",
+    "summary": "A short introduction to the search engine used to explore internet-connected devices and understand exposed services.",
+    "url": "https://www.linkedin.com/posts/pritam-nath-dipta_pwning-the-internet-with-shodan-activity-7299299598668312576-_AyF",
+    "kind": "LinkedIn post",
+    "mark": "OSINT"
+  }
+]

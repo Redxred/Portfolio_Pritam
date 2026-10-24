@@ -8,10 +8,12 @@
     "build": "node scripts/build-legacy.mjs",
     "preview": "node scripts/serve.mjs",
     "qa:http": "node scripts/qa-http.mjs",
-    "qa:browser": "node scripts/qa-browser.mjs"
+    "qa:browser": "node scripts/qa-browser.mjs",
+    "qa:linkedin": "node scripts/qa-linkedin.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
+    "@vercel/blob": "2.4.0",
     "three": "^0.181.0"
   },
   "devDependencies": {

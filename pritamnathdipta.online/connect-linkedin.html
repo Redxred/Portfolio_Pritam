@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-q1+DaXsZUnEJs3jpN9ZoWp6ypK1xBwXiRxG+C31xOUA=' 'sha256-/x7W7R75k8Roq0WaVRQX9blP4OufE5xbAdzklGxsgpw='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0a0f1a">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/fonts/fonts.css">
+  <link rel="stylesheet" href="/blog.css">
+  <script type="module" src="/connect-linkedin.js"></script>
+  <title>Connect LinkedIn — Pritam Nath Dipta</title>
+</head>
+<body>
+  <header class="blog-header"><div class="blog-container blog-header-inner"><a class="blog-brand" href="/">Pritam <span>Nath Dipta</span></a><nav class="blog-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/blog.html">Blog</a></nav></div></header>
+  <main class="blog-container connect-main">
+    <p class="blog-eyebrow">OWNER SETUP / LINKEDIN</p>
+    <h1>Connect my <em>LinkedIn feed.</em></h1>
+    <p>Enter your private connection key to authorize your LinkedIn account. New public posts will appear on the Blog after the daily sync. Reconnect here when LinkedIn's access token expires.</p>
+    <form id="connect-form">
+      <label for="connect-key">Private connection key</label>
+      <input id="connect-key" name="key" type="password" autocomplete="off" required minlength="24">
+      <button class="blog-button blog-button-primary" type="submit">Connect LinkedIn <span aria-hidden="true">↗</span></button>
+    </form>
+    <p id="connect-message" class="connect-message" role="status" aria-live="polite"></p>
+    <a class="blog-card-link" href="/blog.html">View Blog <span aria-hidden="true">↗</span></a>
+  </main>
+</body>
+</html>

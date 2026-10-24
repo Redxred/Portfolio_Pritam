@@ -38,6 +38,13 @@ const server = createServer(async (req, res) => {
   if ((!acme && /(^|\/)\./.test(pathname)) || /^\/(node_modules|site-src|qa-chrome[^/]*)(\/|$)/i.test(pathname) || forbidden.test(pathname)) {
     finish(403, 'Forbidden'); return;
   }
+  // The loopback preview is static. Match the disconnected Vercel feed response.
+  if (pathname === '/api/linkedin/posts') {
+    const body = Buffer.from(JSON.stringify({ updatedAt: null, posts: [] }));
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Content-Length': body.length, 'Cache-Control': 'no-store' });
+    res.end(req.method === 'HEAD' ? undefined : body);
+    return;
+  }
   let path = resolve(root, `.${pathname}`);
   if (outsideRoot(path)) { finish(403, 'Forbidden'); return; }
   if (pathname === '/') path = resolve(root, 'index.html');

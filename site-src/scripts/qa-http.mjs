@@ -21,7 +21,7 @@ async function check(name, fn) {
   try { await fn(); results.push({ name, passed: true }); }
   catch (error) { results.push({ name, passed: false, error: error.message }); }
 }
-for (const path of ['/', '/cv.html', '/cv.css', '/cv.js', '/seo-fallback.css', '/robots.txt', '/sitemap.xml', '/assets/index-motion.js', '/assets/hero-flow.js', '/assets/hero-flow-mobile.js', '/site-fixes.js', '/welcome-chat.js', '/welcome-chat.css', '/assets/index-local.css', '/fonts/fonts.css', '/fonts/inter-latin.woff2']) {
+for (const path of ['/', '/cv.html', '/cv.css', '/cv.js', '/blog.html', '/blog.css', '/blog.js', '/connect-linkedin.html', '/connect-linkedin.js', '/seo-fallback.css', '/robots.txt', '/sitemap.xml', '/assets/index-motion.js', '/assets/hero-flow.js', '/assets/hero-flow-mobile.js', '/site-fixes.js', '/welcome-chat.js', '/welcome-chat.css', '/assets/index-local.css', '/fonts/fonts.css', '/fonts/inter-latin.woff2']) {
   await check(`GET ${path}`, async () => {
     const response = await request(path); assert.equal(response.status, 200);
     for (const [name, value] of Object.entries(securityHeaders)) assert.equal(response.headers[name.toLowerCase()], value);
@@ -33,6 +33,19 @@ await check('Homepage keeps readable HTML without JavaScript', async () => {
   assert.match(html, /<h1>Pritam Nath Dipta<\/h1>/);
   assert.match(html, /document\.documentElement\.classList\.add\('js'\)/);
   assert.match(html, /<script type="application\/ld\+json">/);
+});
+await check('Blog posts are rendered in HTML with verified LinkedIn links', async () => {
+  const html = (await request('/blog.html')).body.toString();
+  assert.equal((html.match(/class="blog-card"/g) || []).length, 4);
+  assert.match(html, /linkedin\.com\/posts\/pritam-nath-dipta_/);
+  assert.match(html, /linkedin\.com\/pulse\/social-engineering/);
+  assert.doesNotMatch(html, /BLOG_POSTS|BLOG_COUNT/);
+});
+await check('LinkedIn connection page is private setup content', async () => {
+  const html = (await request('/connect-linkedin.html')).body.toString();
+  assert.match(html, /noindex, nofollow/);
+  assert.match(html, /Private connection key/);
+  assert.doesNotMatch(html, /LINKEDIN_CLIENT_SECRET|LINKEDIN_CONNECT_KEY/);
 });
 for (const path of ['/.env', '/.git/config', '/.htaccess', '/site-src/package.json', '/node_modules/', '/qa-chrome-audit/', '/assets/', '/backup.sql', '/server.php', '/assets/app.js.map', '/%2e%2e/site-src/package.json', '/assets/%2e%2e/%2e%2e/site-src/package.json', '/assets%5c..%5cpackage.json']) {
   await check(`Block ${path}`, async () => { assert.equal((await request(path)).status, 403); });

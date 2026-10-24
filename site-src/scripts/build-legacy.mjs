@@ -85,10 +85,10 @@ await build({
   },
 });
 
-for (const file of ['legacy-motion.css', 'legacy-motion.js', 'security-motion.js', 'security-motion.css', 'footer-redesign.css', 'welcome-chat.css', 'welcome-chat.js', 'site-fixes.js', 'cv-fixes.css', 'cv.css', 'cv.js', 'seo-fallback.css']) {
+for (const file of ['legacy-motion.css', 'legacy-motion.js', 'security-motion.js', 'security-motion.css', 'footer-redesign.css', 'welcome-chat.css', 'welcome-chat.js', 'site-fixes.js', 'cv-fixes.css', 'cv.css', 'cv.js', 'seo-fallback.css', 'blog.css', 'blog.js', 'connect-linkedin.js']) {
   await copyFile(join(source, file), join(destination, file));
 }
-for (const file of ['index.html', '404.html']) {
+for (const file of ['index.html', '404.html', 'connect-linkedin.html']) {
   await writeFile(join(destination, file), secureHtml(await readFile(join(source, file), 'utf8')));
 }
 const cvPath = join(destination, 'cv.html');
@@ -98,6 +98,32 @@ if (!cvHtml.includes('/fonts/fonts.css')) cvHtml = cvHtml.replace('</head>', '  
 if (!cvHtml.includes('/cv-fixes.css')) cvHtml = cvHtml.replace('</head>', '  <link rel="stylesheet" href="/cv-fixes.css">\n</head>');
 if (!cvHtml.includes('/assets/analytics.js')) cvHtml = cvHtml.replace('</head>', '  <script type="module" src="/assets/analytics.js"></script>\n</head>');
 await writeFile(cvPath, cvHtml);
+const posts = JSON.parse(await readFile(join(source, 'blog-posts.json'), 'utf8'));
+if (!Array.isArray(posts) || !posts.length || posts.length > 30) throw new Error('Blog posts must be a nonempty, bounded list');
+const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+const usedUrls = new Set();
+const cards = posts.map((post, index) => {
+  for (const field of ['title', 'summary', 'category', 'kind', 'mark', 'url']) {
+    if (typeof post[field] !== 'string' || !post[field].trim()) throw new Error(`Blog post ${index + 1} is missing ${field}`);
+  }
+  if (post.title.length > 180 || post.summary.length > 350 || post.mark.length > 10) throw new Error(`Blog post ${index + 1} is too long`);
+  const url = new URL(post.url);
+  if (url.protocol !== 'https:' || url.hostname !== 'www.linkedin.com' || !/^\/(posts|pulse)\//.test(url.pathname) || usedUrls.has(url.href)) throw new Error(`Blog post ${index + 1} has an invalid or duplicate LinkedIn URL`);
+  usedUrls.add(url.href);
+  return `<article class="blog-card" data-category="${escapeHtml(post.category)}">
+    <div class="blog-card-art" aria-hidden="true"><span>${escapeHtml(post.mark)}</span></div>
+    <div class="blog-card-content">
+      <div class="blog-card-meta"><span>${escapeHtml(post.category)}</span><span>${escapeHtml(post.kind)}</span></div>
+      <h3>${escapeHtml(post.title)}</h3>
+      <p>${escapeHtml(post.summary)}</p>
+      <a class="blog-card-link" href="${escapeHtml(url.href)}" target="_blank" rel="noopener noreferrer" aria-label="Read ${escapeHtml(post.title)} on LinkedIn">Read on LinkedIn <span aria-hidden="true">↗</span></a>
+    </div>
+  </article>`;
+}).join('\n');
+let blogHtml = await readFile(join(source, 'blog.html'), 'utf8');
+if (!blogHtml.includes('<!-- BLOG_POSTS -->') || !blogHtml.includes('<!-- BLOG_COUNT -->')) throw new Error('Blog placeholders are missing');
+blogHtml = blogHtml.replace('<!-- BLOG_POSTS -->', cards).replace('<!-- BLOG_COUNT -->', String(posts.length));
+await writeFile(join(destination, 'blog.html'), secureHtml(blogHtml));
 const apache = (await readFile(join(source, '.htaccess.template'), 'utf8')).replace('__CSP__', contentPolicy);
 await writeFile(join(destination, '.htaccess'), apache);
 
@@ -109,7 +135,7 @@ if (dirname(resolve(vercelOutput)) !== dirname(resolve(source)) || basename(verc
 await rm(vercelOutput, { recursive: true, force: true });
 await mkdir(join(vercelOutput, 'assets'), { recursive: true });
 await mkdir(join(vercelOutput, 'download'), { recursive: true });
-for (const file of ['index.html', 'cv.html', '404.html', 'cv.css', 'cv.js', 'cv-fixes.css', 'legacy-motion.css', 'legacy-motion.js', 'security-motion.js', 'security-motion.css', 'footer-redesign.css', 'welcome-chat.css', 'welcome-chat.js', 'site-fixes.js', 'seo-fallback.css', 'Pritam_Nath_Dipta_CV.pdf', 'favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'social-card.png', 'robots.txt', 'sitemap.xml', 'llms.txt', '641baf96f1d35bf3322be08a41073b28.txt']) {
+for (const file of ['index.html', 'cv.html', 'blog.html', 'connect-linkedin.html', '404.html', 'cv.css', 'cv.js', 'cv-fixes.css', 'blog.css', 'blog.js', 'connect-linkedin.js', 'legacy-motion.css', 'legacy-motion.js', 'security-motion.js', 'security-motion.css', 'footer-redesign.css', 'welcome-chat.css', 'welcome-chat.js', 'site-fixes.js', 'seo-fallback.css', 'Pritam_Nath_Dipta_CV.pdf', 'favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'social-card.png', 'robots.txt', 'sitemap.xml', 'llms.txt', '641baf96f1d35bf3322be08a41073b28.txt']) {
   await copyFile(join(destination, file), join(vercelOutput, file));
 }
 for (const file of ['index-motion.js', 'index-local.css', 'hero-flow.js', 'hero-flow-mobile.js', 'analytics.js', 'hero-optimized.webp', 'profile-optimized.webp', 'footer-hacker-cartoon.png']) {
