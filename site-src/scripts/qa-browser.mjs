@@ -95,6 +95,12 @@ try {
     assert.equal(await evaluate('document.activeElement.textContent'), 'Skip to content');
   });
   await screenshot('desktop-hero');
+  await check('Hero beams fall and burst behind the content', async () => {
+    assert.equal(await evaluate("document.querySelectorAll('.hero-collision-beam').length"), 6);
+    assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-beams-layer')).pointerEvents"), 'none');
+    for (let i = 0; i < 28 && await evaluate("Number(document.querySelector('.hero-beams-layer').dataset.collisions)") === 0; i++) await wait(250);
+    assert.ok(await evaluate("Number(document.querySelector('.hero-beams-layer').dataset.collisions)") > 0);
+  });
   await check('Hero background follows mouse movement', async () => {
     const rect = await evaluate("(()=>{const r=document.querySelector('main section:first-child').getBoundingClientRect();return {left:r.left,top:r.top,width:r.width,height:r.height}})()");
     assert.equal(await evaluate("document.querySelector('.hero-flow-canvas').getContext('webgl2') !== null"), true);
@@ -304,6 +310,7 @@ try {
         assert.ok(sceneRequests.includes('/assets/hero-flow-mobile.js'), JSON.stringify(sceneRequests));
         assert.equal(sceneRequests.includes('/assets/hero-flow.js'), false);
         assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-flow-glow')).animationName"), 'none');
+        assert.equal(await evaluate("document.querySelectorAll('.hero-collision-beam').length"), 2);
       });
       await check('Footer name stays visible without hover on touch screens', async () => {
         const color = await evaluate("getComputedStyle(document.querySelector('.footer-signature-color')).opacity");
@@ -364,6 +371,7 @@ try {
   await check('Reduced motion stops rendering and footer animation', async () => {
     await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] }); await wait(450);
     assert.equal(await evaluate("document.querySelector('.hero-flow-canvas').dataset.motionState"), 'paused');
+    assert.equal(await evaluate("document.querySelector('.hero-beams-layer').dataset.motionState"), 'paused');
     assert.equal(await evaluate("getComputedStyle(document.querySelector('.legacy-footer-orbit')).animationName"), 'none');
     assert.equal(await evaluate("getComputedStyle(document.querySelector('.legacy-footer-visual img')).animationName"), 'none');
     assert.equal(await evaluate("getComputedStyle(document.querySelector('.security-atmosphere'),'::after').animationName"), 'none');
@@ -371,6 +379,7 @@ try {
   await check('Reduced motion skips the hero animation download on reload', async () => {
     await go('/');
     assert.equal(await evaluate("performance.getEntriesByType('resource').some(r=>r.name.includes('hero-flow.js'))"), false);
+    assert.equal(await evaluate("document.querySelector('.hero-beams-layer')"), null);
     assert.match(await evaluate('document.querySelector("h1").textContent'), /Pritam Nath Dipta/);
   });
   await check('Reduced-motion navigation scrolls without animation', async () => {

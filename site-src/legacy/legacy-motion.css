@@ -86,6 +86,75 @@ section[id], #main-content { scroll-margin-top: 96px; }
   height: 100%;
 }
 
+/* Falling light beams and short collision bursts behind the hero content. */
+.hero-beams-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint;
+}
+.hero-beams-layer::after {
+  content: "";
+  position: absolute;
+  top: 86%;
+  left: 5%;
+  right: 5%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(185 96% 65% / .46) 22%, hsl(270 88% 69% / .5) 76%, transparent);
+  box-shadow: 0 0 19px hsl(186 96% 60% / .19);
+}
+.hero-collision-beam {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 120px;
+  border-radius: 99px;
+  background: linear-gradient(180deg, transparent 0%, hsl(var(--beam-hue) 96% 67% / .04) 28%, hsl(var(--beam-hue) 96% 67% / .86) 94%, #fff 100%);
+  box-shadow: 0 0 8px hsl(var(--beam-hue) 96% 65% / .45);
+  will-change: transform;
+}
+.hero-beam-impact {
+  position: absolute;
+  z-index: 2;
+  width: 0;
+  height: 0;
+}
+.hero-beam-impact-ring {
+  position: absolute;
+  left: -28px;
+  top: -6px;
+  width: 56px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #fff, hsl(var(--burst-hue) 96% 67% / .7) 22%, transparent 72%);
+  box-shadow: 0 0 25px hsl(var(--burst-hue) 96% 65% / .7);
+  animation: hero-beam-flash .72s ease-out both;
+}
+.hero-beam-impact-spark {
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: hsl(var(--burst-hue) 96% 74%);
+  box-shadow: 0 0 9px hsl(var(--burst-hue) 96% 72%);
+  animation: hero-beam-spark .75s ease-out var(--spark-delay) both;
+}
+@keyframes hero-beam-flash {
+  0% { opacity: 0; transform: scale(.25); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: scale(2.7); }
+}
+@keyframes hero-beam-spark {
+  0% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+  100% { opacity: 0; transform: translate3d(var(--dx), var(--dy), 0) scale(.15); }
+}
+.light .hero-collision-beam { opacity: .66; }
+.light .hero-beams-layer::after { opacity: .62; }
+
 .legacy-motion-hero.is-in-view .hero-flow-glow { animation-play-state: running; }
 .legacy-page-hidden .hero-flow-glow { animation-play-state: paused; }
 
@@ -95,6 +164,8 @@ section[id], #main-content { scroll-margin-top: 96px; }
 }
 
 @media (max-width: 640px) {
+  .hero-collision-beam { width: 1.5px; height: 75px; opacity: .62; }
+  .hero-beams-layer::after { top: 89%; opacity: .48; }
   .hero-flow-glow { width: 90vw; height: 54vh; filter: blur(25px); animation: none; }
   .hero-flow-glow-cyan { left: -45%; bottom: -12%; }
   .hero-flow-glow-violet { right: -50%; bottom: -20%; }

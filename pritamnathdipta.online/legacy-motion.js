@@ -307,6 +307,7 @@ function scheduleHeroMotion(hero) {
       if (reducedMotion.matches || saveData) return;
       const canvas = hero.querySelector('.hero-flow-canvas');
       if (!canvas) return;
+      import('./hero-beams.js').then(module => module.initHeroBeams(hero)).catch(() => {});
       const scene = matchMedia('(max-width: 767px)').matches
         ? './assets/hero-flow-mobile.js'
         : './assets/hero-flow.js';
