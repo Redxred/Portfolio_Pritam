@@ -150,75 +150,40 @@ function enhanceFooter(footer) {
   });
 
   const closing = document.createElement('div');
-  closing.className = 'legacy-footer-content';
+  closing.className = 'legacy-footer-showcase';
   closing.innerHTML = `
-    <div class="legacy-footer-message">
-      <p class="legacy-footer-eyebrow">The next step</p>
-      <h2>Thanks for exploring my work.</h2>
-      <p>If your next project needs thoughtful security, reliable testing, or practical IT support, let's talk.</p>
+    <div class="legacy-footer-copy">
+      <p class="legacy-footer-kicker"><span aria-hidden="true"></span> WHAT'S NEXT?</p>
+      <h2>Let's make your next <em>move count.</em></h2>
+      <p>Security, software quality, and dependable tech support for the things you're building.</p>
       <div class="legacy-footer-actions">
-        <a class="legacy-footer-cta" href="#contact">Let's connect <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-        <a class="legacy-footer-secondary" href="/cv.html">View my CV <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+        <a class="legacy-footer-cta" href="mailto:pritamnathdipta@gmail.com?subject=Let%27s%20work%20together">Start a conversation <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+        <a class="legacy-footer-secondary" href="/cv.html">Explore my CV <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
       </div>
     </div>
-    <nav class="legacy-footer-nav" aria-label="Footer navigation">
-      <p>Explore</p>
-      <div class="legacy-footer-nav-links">
-        <a href="#about"><span>01</span> About</a>
-        <a href="#services"><span>02</span> Services</a>
-        <a href="#projects"><span>03</span> Projects</a>
-        <a href="#research"><span>04</span> Research</a>
-        <a href="#contact"><span>05</span> Contact</a>
-      </div>
-    </nav>`;
-  const name = document.createElement('p');
-  name.className = 'legacy-footer-name';
-  const accessibleName = document.createElement('span');
-  accessibleName.className = 'sr-only';
-  accessibleName.textContent = 'PRITAM';
-  const letters = document.createElement('span');
-  letters.className = 'legacy-footer-letters';
-  letters.setAttribute('aria-hidden', 'true');
-  [...'PRITAM'].forEach((letter, index) => {
-    const span = document.createElement('span');
-    span.className = 'legacy-footer-letter';
-    span.style.setProperty('--letter', index);
-    span.textContent = letter;
-    letters.append(span);
-  });
-  const outline = letters.cloneNode(true);
-  outline.className = 'legacy-footer-outline';
-  outline.querySelectorAll('span').forEach(letter => { letter.className = 'legacy-footer-outline-letter'; });
-  const subtitle = document.createElement('span');
-  subtitle.className = 'legacy-footer-subtitle';
-  subtitle.textContent = 'Security · Software QA · IT Support';
-  name.append(accessibleName, outline, letters, subtitle);
-
-  const sequence = document.createElement('div');
-  sequence.className = 'security-footer-sequence';
-  sequence.setAttribute('role', 'group');
-  sequence.setAttribute('aria-label', 'My approach');
-  ['Think', 'Test', 'Harden', 'Ship'].forEach((step, index) => {
-    const item = document.createElement('span');
-    item.style.setProperty('--step', index);
-    const number = document.createElement('small');
-    number.textContent = `0${index + 1}`;
-    number.setAttribute('aria-hidden', 'true');
-    item.append(number, document.createTextNode(step));
-    sequence.append(item);
-  });
-
-  const topRow = document.createElement('div');
-  topRow.className = 'legacy-footer-top-row';
+    <div class="legacy-footer-visual" aria-hidden="true">
+      <div class="legacy-footer-orbit"></div>
+      <div class="legacy-footer-orbit legacy-footer-orbit-inner"></div>
+      <span class="legacy-footer-spark legacy-footer-spark-one"></span>
+      <span class="legacy-footer-spark legacy-footer-spark-two"></span>
+      <img src="/assets/footer-hacker-cartoon.png" width="415" height="362" loading="lazy" alt="">
+      <span class="legacy-footer-visual-caption">IDEAS INTO IMPACT <span>↗</span></span>
+    </div>`;
+  const lower = document.createElement('div');
+  lower.className = 'legacy-footer-lower';
+  lower.innerHTML = `
+    <div class="legacy-footer-brand"><span class="legacy-footer-monogram" aria-hidden="true">PN<span>.</span></span><span><strong>Pritam Nath Dipta</strong><small>Cybersecurity · Software QA · IT Support</small></span></div>
+    <nav class="legacy-footer-nav" aria-label="Footer navigation"><a href="#about">About</a><a href="#projects">Projects</a><a href="#research">Research</a><a href="#contact">Contact</a></nav>`;
   const backToTop = document.createElement('button');
   backToTop.type = 'button';
   backToTop.className = 'legacy-footer-back-to-top';
+  backToTop.setAttribute('aria-label', 'Back to top');
   backToTop.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 14 6-6 6 6"/><path d="M12 8v11"/></svg><span>Back to top</span>';
   backToTop.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
   });
-  topRow.append(backToTop);
-  container.prepend(closing, topRow, name, sequence);
+  lower.append(backToTop);
+  container.prepend(closing, lower);
 
   const entranceObserver = new IntersectionObserver(([entry]) => {
     footer.classList.toggle('is-in-view', entry.isIntersecting);
@@ -233,9 +198,6 @@ function enhanceFooter(footer) {
   let targetX = currentX;
   let targetY = currentY;
   let frame = 0;
-  let pointerActive = false;
-  let footerWidth = footer.clientWidth;
-  let footerHeight = footer.clientHeight;
 
   const settleGlow = () => {
     if (document.hidden || reducedMotion.matches) { frame = 0; return; }
@@ -243,8 +205,6 @@ function enhanceFooter(footer) {
     currentY += (targetY - currentY) * .15;
     footer.style.setProperty('--motion-x', `${currentX.toFixed(1)}px`);
     footer.style.setProperty('--motion-y', `${currentY.toFixed(1)}px`);
-    letters.style.setProperty('--name-rx', `${pointerActive ? (0.5 - currentY / footerHeight) * 2 : 0}deg`);
-    letters.style.setProperty('--name-ry', `${pointerActive ? (currentX / footerWidth - .5) * 3 : 0}deg`);
     if (Math.abs(targetX - currentX) + Math.abs(targetY - currentY) > .5) {
       frame = requestAnimationFrame(settleGlow);
     } else {
@@ -254,19 +214,15 @@ function enhanceFooter(footer) {
   const queueGlow = () => { if (!frame) frame = requestAnimationFrame(settleGlow); };
 
   footer.addEventListener('pointerenter', () => {
-    pointerActive = true;
     footer.classList.add('is-pointer-active');
   });
   footer.addEventListener('pointermove', event => {
     const bounds = footer.getBoundingClientRect();
-    footerWidth = bounds.width;
-    footerHeight = bounds.height;
     targetX = event.clientX - bounds.left;
     targetY = event.clientY - bounds.top;
     queueGlow();
   }, { passive: true });
   footer.addEventListener('pointerleave', () => {
-    pointerActive = false;
     footer.classList.remove('is-pointer-active');
     targetX = footer.clientWidth / 2;
     targetY = 0;

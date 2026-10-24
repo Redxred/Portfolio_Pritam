@@ -231,9 +231,10 @@ try {
     });
     await evaluate('window.scrollTo(0,document.documentElement.scrollHeight)'); await wait(500);
     await screenshot(`${theme}-footer`);
-    if (theme === 'dark') await check('Footer sequence animates without the removed character', async () => {
-      assert.equal(await evaluate("document.querySelectorAll('footer img, footer image, .legacy-footer-walker').length"), 0);
-      const signal = "getComputedStyle(document.querySelector('.security-footer-sequence'),'::after').transform";
+    if (theme === 'dark') await check('Footer artwork and orbit animation render', async () => {
+      assert.equal(await evaluate("document.querySelector('.legacy-footer-visual img').complete"), true);
+      assert.equal(await evaluate("document.querySelector('.legacy-footer-visual img').naturalWidth > 0"), true);
+      const signal = "getComputedStyle(document.querySelector('.legacy-footer-orbit')).transform";
       const first = await evaluate(signal);
       await wait(230);
       assert.notEqual(first, await evaluate(signal));
@@ -264,7 +265,7 @@ try {
     await wait(200);
     await check(`Responsive width ${width}`, async () => {
       assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth'), true);
-      assert.equal(await evaluate("(()=>{const r=document.querySelector('.legacy-footer-name').getBoundingClientRect();return r.left>=0&&r.right<=innerWidth})()"), true);
+      assert.equal(await evaluate("(()=>{const r=document.querySelector('.legacy-footer-showcase').getBoundingClientRect();return r.left>=0&&r.right<=innerWidth})()"), true);
     });
     if (width === 390) {
       await evaluate('window.scrollTo(0,0)'); await wait(300);
@@ -293,11 +294,11 @@ try {
       });
     }
   }
-  await check('Reduced motion stops rendering and letter animation', async () => {
+  await check('Reduced motion stops rendering and footer animation', async () => {
     await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] }); await wait(450);
     assert.equal(await evaluate("document.querySelector('.hero-flow-canvas').dataset.motionState"), 'paused');
-    assert.equal(await evaluate("getComputedStyle(document.querySelector('.legacy-footer-letter')).animationName"), 'none');
-    assert.equal(await evaluate("getComputedStyle(document.querySelector('.security-footer-sequence'),'::after').animationName"), 'none');
+    assert.equal(await evaluate("getComputedStyle(document.querySelector('.legacy-footer-orbit')).animationName"), 'none');
+    assert.equal(await evaluate("getComputedStyle(document.querySelector('.legacy-footer-visual img')).animationName"), 'none');
     assert.equal(await evaluate("getComputedStyle(document.querySelector('.security-atmosphere'),'::after').animationName"), 'none');
   });
   await check('Reduced motion skips the hero animation download on reload', async () => {
