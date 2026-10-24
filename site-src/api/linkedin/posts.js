@@ -1,6 +1,9 @@
 import { readFeed } from '../../lib/linkedin.js';
 
 export async function GET() {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    return Response.json({ updatedAt: null, posts: [] }, { headers: { 'Cache-Control': 'public, s-maxage=300' } });
+  }
   try {
     const feed = await readFeed();
     return Response.json(feed || { updatedAt: null, posts: [] }, {
