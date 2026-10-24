@@ -51,7 +51,60 @@ export function enhanceSite() {
     const menu = header.querySelector('button[aria-expanded="true"]');
     if (menu) { menu.click(); menu.focus(); }
   });
+  initAnimatedReviews(document.querySelector('#testimonials'));
   enhanceContact();
+}
+
+function initAnimatedReviews(section) {
+  if (!section) return;
+  let frame = 0;
+  const sync = () => {
+    frame = 0;
+    const track = section.querySelector('.touch-pan-y > div');
+    if (!track) return;
+    const slides = [...track.children].filter(slide => slide.querySelector('p.italic'));
+    slides.forEach((slide, index) => {
+      const quote = slide.querySelector('p.italic');
+      const content = quote.parentElement;
+      const author = content.lastElementChild;
+      const name = author.querySelector('h4')?.textContent.trim() || 'Reviewer';
+      const category = author.lastElementChild?.textContent.trim() || 'Review';
+      slide.classList.add('review-slide');
+      content.parentElement.classList.add('review-card');
+      content.classList.add('review-layout');
+      quote.classList.add('review-quote');
+      quote.nextElementSibling?.classList.add('review-stars');
+      author.classList.add('review-author');
+      let portrait = content.querySelector(':scope > .review-portrait');
+      if (!portrait) {
+        portrait = document.createElement('div');
+        portrait.className = 'review-portrait';
+        portrait.setAttribute('aria-hidden', 'true');
+        const count = document.createElement('span');
+        count.className = 'review-portrait-count';
+        const initials = document.createElement('span');
+        initials.className = 'review-portrait-initials';
+        initials.textContent = name.split(/\s+/).slice(0, 2).map(word => word[0]).join('').toUpperCase();
+        const kind = document.createElement('span');
+        kind.className = 'review-portrait-kind';
+        kind.textContent = category;
+        portrait.dataset.kind = category.toLowerCase();
+        portrait.append(count, initials, kind);
+        content.prepend(portrait);
+      }
+      const count = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+      const countLabel = portrait.querySelector('.review-portrait-count');
+      if (countLabel.textContent !== count) countLabel.textContent = count;
+    });
+    const offset = Number(track.style.transform.match(/translateX\(-?(\d+(?:\.\d+)?)%\)/)?.[1] || 0);
+    const active = Math.min(slides.length - 1, Math.round(offset / 100));
+    slides.forEach((slide, index) => slide.classList.toggle('is-active', index === active));
+  };
+  const observer = new MutationObserver(() => {
+    if (!frame) frame = requestAnimationFrame(sync);
+  });
+  observer.observe(section, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+  sync();
 }
 
 function enhanceContact() {

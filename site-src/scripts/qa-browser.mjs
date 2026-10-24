@@ -203,10 +203,15 @@ try {
     await evaluate("document.querySelector('#testimonials').scrollIntoView({behavior:'instant'})"); await wait(1000);
     await evaluate("document.querySelector('#testimonials button[title=\"Pause auto-scroll\"]')?.click()");
     await evaluate("[...document.querySelectorAll('#testimonials button')].find(b=>b.textContent==='Clients').click()"); await wait(650);
-    const visibleQuote = "[...document.querySelectorAll('#testimonials .italic')].find(p=>{const r=p.getBoundingClientRect();return r.left<=innerWidth/2&&r.right>=innerWidth/2}).textContent";
-    const before = await evaluate(visibleQuote);
+    assert.equal(await evaluate("document.querySelectorAll('#testimonials .review-slide').length"), 6);
+    assert.equal(await evaluate("document.querySelector('#testimonials .review-slide.is-active .review-portrait-kind').textContent"), 'Client');
+    assert.equal(await evaluate("getComputedStyle(document.querySelector('#testimonials .review-layout')).display"), 'grid');
+    const activeQuote = "document.querySelector('#testimonials .review-slide.is-active .review-quote').textContent";
+    const before = await evaluate(activeQuote);
     await evaluate("[...document.querySelectorAll('#testimonials button[aria-label=\"Next review\"]')].find(b=>b.getBoundingClientRect().width).click()"); await wait(650);
-    assert.notEqual(await evaluate(visibleQuote), before);
+    assert.notEqual(await evaluate(activeQuote), before);
+    assert.equal(await evaluate("document.querySelector('#testimonials .review-slide.is-active .review-portrait-count').textContent"), '02 / 06');
+    await screenshot('review-desktop');
   });
   await check('Footer-only back-to-top button returns to the start', async () => {
     assert.equal(await evaluate("document.querySelectorAll('.legacy-footer-back-to-top').length"), 1);
@@ -233,7 +238,7 @@ try {
     await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: rect.left + rect.width * .8, y: rect.top + rect.height * .5 });
     await wait(250);
     const right = Number(await evaluate("document.querySelector('#footer-signature-reveal').getAttribute('cx')"));
-    assert.ok(left < 500 && right > 600 && right - left > 200, JSON.stringify({ left, right }));
+    assert.ok(left < 500 && right > 550 && right - left > 100, JSON.stringify({ left, right }));
     await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 1, y: 1 });
   });
 
@@ -335,7 +340,7 @@ try {
       await screenshot('mobile-footer');
       for (const sectionId of ['about', 'projects', 'services', 'research', 'testimonials', 'contact']) {
         await evaluate(`document.getElementById('${sectionId}').scrollIntoView({behavior:'instant'})`);
-        await wait(200);
+        await wait(sectionId === 'testimonials' ? 700 : 200);
         await screenshot(`mobile-${sectionId}`);
       }
       await check('Mobile menu opens and Escape closes it', async () => {

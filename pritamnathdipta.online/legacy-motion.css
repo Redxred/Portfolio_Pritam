@@ -302,6 +302,126 @@ section[id], #main-content { scroll-margin-top: 96px; }
   #services .portfolio-service-card:hover { transform: translateY(-7px) scale(1.012); }
 }
 
+/* Portrait-and-quote layout for the existing, attributed reviews. */
+#testimonials .relative.max-w-4xl { max-width: 1100px; }
+#testimonials .review-slide { padding-inline: 8px; }
+#testimonials .review-card {
+  overflow: hidden;
+  border: 1px solid hsl(var(--border) / .7);
+  border-radius: 24px;
+  background: linear-gradient(145deg, hsl(var(--card)), hsl(var(--card) / .92));
+  box-shadow: 0 24px 60px hsl(var(--background) / .16);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+#testimonials .review-layout {
+  display: grid;
+  grid-template-columns: minmax(0, .82fr) minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto auto;
+  gap: 0 clamp(25px, 4vw, 58px);
+  align-items: start;
+  min-height: 450px;
+  padding: clamp(18px, 2.6vw, 30px);
+}
+#testimonials .review-portrait {
+  position: relative;
+  isolation: isolate;
+  grid-column: 1;
+  grid-row: 1 / 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-self: stretch;
+  min-height: 390px;
+  overflow: hidden;
+  padding: 24px;
+  border: 1px solid rgba(111, 200, 224, .2);
+  border-radius: 18px;
+  color: #f5fcff;
+  background: radial-gradient(circle at 75% 28%, rgba(86, 72, 184, .52), transparent 47%),
+    linear-gradient(145deg, #162c40 0%, #121b32 55%, #211735 100%);
+}
+#testimonials .review-portrait[data-kind="professor"] { background: radial-gradient(circle at 70% 24%, rgba(146, 91, 203, .5), transparent 48%), linear-gradient(145deg, #172d3e, #22203e 65%, #20142d); }
+#testimonials .review-portrait[data-kind="friend"] { background: radial-gradient(circle at 75% 25%, rgba(31, 189, 185, .37), transparent 45%), linear-gradient(145deg, #173741, #142637 60%, #1b213b); }
+#testimonials .review-portrait::before,
+#testimonials .review-portrait::after { content: ''; position: absolute; z-index: -1; pointer-events: none; }
+#testimonials .review-portrait::before {
+  width: 78%;
+  aspect-ratio: 1;
+  top: 50%; left: 50%;
+  border: 1px solid rgba(126, 221, 237, .28);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 32px rgba(98, 198, 231, .035), 0 0 0 65px rgba(98, 198, 231, .025);
+}
+#testimonials .review-portrait::after {
+  inset: 0;
+  opacity: .36;
+  background: linear-gradient(120deg, transparent 30%, rgba(92, 226, 238, .16) 50%, transparent 70%);
+}
+#testimonials .review-portrait-count,
+#testimonials .review-portrait-kind { position: relative; z-index: 1; font: 700 11px/1.4 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .15em; text-transform: uppercase; }
+#testimonials .review-portrait-count { color: #72e2ef; }
+#testimonials .review-portrait-kind { color: #b6c9d8; }
+#testimonials .review-portrait-initials {
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  font: 700 clamp(112px, 13vw, 185px)/1 'Space Grotesk', Inter, sans-serif;
+  letter-spacing: -.1em;
+  color: transparent;
+  -webkit-text-stroke: 2px #8ee8f5;
+  text-shadow: 0 18px 40px rgba(31, 218, 225, .14);
+}
+#testimonials .review-layout > svg { grid-column: 2; grid-row: 1; margin: 8px 0 12px; color: hsl(var(--primary) / .62); }
+#testimonials .review-quote {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: center;
+  margin: 0;
+  color: hsl(var(--foreground));
+  font-size: clamp(1.08rem, 1.65vw, 1.4rem);
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.6;
+}
+#testimonials .review-stars { grid-column: 2; grid-row: 3; margin: 20px 0 16px; }
+#testimonials .review-author {
+  grid-column: 2;
+  grid-row: 4;
+  align-items: center;
+  gap: 10px;
+  padding-top: 18px;
+  border-top: 1px solid hsl(var(--border) / .72);
+}
+#testimonials .review-author > div:first-child { display: none; }
+#testimonials .review-author h4 { font-size: 1rem; }
+#testimonials .review-author p { line-height: 1.45; }
+#testimonials .review-slide.is-active .review-portrait { animation: review-portrait-in .65s cubic-bezier(.22, 1, .36, 1) both; }
+#testimonials .review-slide.is-active .review-quote { animation: review-quote-in .58s .08s cubic-bezier(.22, 1, .36, 1) both; }
+@keyframes review-portrait-in { from { opacity: .65; transform: translateY(16px) rotate(-2deg) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes review-quote-in { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: none; } }
+
+@media (min-width: 768px) {
+  #testimonials .relative.max-w-4xl { width: calc(100% - 96px); }
+}
+@media (max-width: 767px) {
+  #testimonials .review-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; min-height: 0; padding: 16px; }
+  #testimonials .review-portrait { grid-column: 1; grid-row: 1; min-height: 185px; max-height: 185px; padding: 17px 20px; }
+  #testimonials .review-portrait-initials { font-size: 106px; }
+  #testimonials .review-layout > svg { grid-column: 1; grid-row: 2; width: 30px; height: 30px; margin: 18px 0 6px; }
+  #testimonials .review-quote { grid-column: 1; grid-row: 3; font-size: 1rem; }
+  #testimonials .review-stars { grid-column: 1; grid-row: 4; margin: 18px 0 14px; }
+  #testimonials .review-author { grid-column: 1; grid-row: 5; flex-direction: row; flex-wrap: wrap; }
+  #testimonials .review-slide.is-active .review-portrait,
+  #testimonials .review-slide.is-active .review-quote { animation-duration: .4s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #testimonials .review-slide.is-active .review-portrait,
+  #testimonials .review-slide.is-active .review-quote { animation: none; }
+  #testimonials .touch-pan-y > div { transition: none; }
+}
+
 .legacy-motion-footer {
   position: relative;
   isolation: isolate;
