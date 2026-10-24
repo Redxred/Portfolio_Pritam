@@ -183,7 +183,32 @@ function enhanceFooter(footer) {
     window.scrollTo({ top: 0, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
   });
   lower.append(backToTop);
-  container.prepend(closing, lower);
+  const signature = document.createElement('div');
+  signature.className = 'legacy-footer-signature';
+  signature.setAttribute('role', 'img');
+  signature.setAttribute('aria-label', 'Pritam Nath Dipta');
+  signature.innerHTML = `
+    <svg viewBox="0 0 1100 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="footer-signature-colors" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1100" y2="0">
+          <stop offset="0%" stop-color="#eab308"/><stop offset="25%" stop-color="#ef4444"/>
+          <stop offset="50%" stop-color="#3b82f6"/><stop offset="75%" stop-color="#06b6d4"/>
+          <stop offset="100%" stop-color="#8b5cf6"/>
+        </linearGradient>
+        <radialGradient id="footer-signature-reveal" gradientUnits="userSpaceOnUse" cx="550" cy="140" r="220">
+          <stop offset="0%" stop-color="white"/><stop offset="65%" stop-color="white"/>
+          <stop offset="100%" stop-color="black"/>
+        </radialGradient>
+        <mask id="footer-signature-mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" mask-type="luminance" x="0" y="0" width="1100" height="280">
+          <rect width="1100" height="280" fill="url(#footer-signature-reveal)"/>
+        </mask>
+      </defs>
+      <g class="footer-signature-base"><text x="550" y="111">Pritam Nath</text><text x="550" y="245">Dipta</text></g>
+      <g class="footer-signature-trace"><text x="550" y="111">Pritam Nath</text><text x="550" y="245">Dipta</text></g>
+      <g class="footer-signature-color" mask="url(#footer-signature-mask)"><text x="550" y="111">Pritam Nath</text><text x="550" y="245">Dipta</text></g>
+    </svg>`;
+  container.prepend(closing, signature, lower);
+  initFooterSignature(signature);
 
   const entranceObserver = new IntersectionObserver(([entry]) => {
     footer.classList.toggle('is-in-view', entry.isIntersecting);
@@ -229,6 +254,48 @@ function enhanceFooter(footer) {
     queueGlow();
   });
 
+}
+
+function initFooterSignature(signature) {
+  const observer = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    signature.classList.add('is-visible');
+    observer.disconnect();
+  }, { threshold: .2 });
+  observer.observe(signature);
+
+  if (reducedMotion.matches || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  const reveal = signature.querySelector('#footer-signature-reveal');
+  let x = 550;
+  let y = 140;
+  let targetX = x;
+  let targetY = y;
+  let frame = 0;
+  const move = () => {
+    if (document.hidden || reducedMotion.matches) { frame = 0; return; }
+    x += (targetX - x) * .24;
+    y += (targetY - y) * .24;
+    reveal.setAttribute('cx', x.toFixed(1));
+    reveal.setAttribute('cy', y.toFixed(1));
+    frame = Math.abs(targetX - x) + Math.abs(targetY - y) > .5 ? requestAnimationFrame(move) : 0;
+  };
+  const pointAt = event => {
+    const rect = signature.querySelector('svg').getBoundingClientRect();
+    targetX = Math.max(0, Math.min(1100, (event.clientX - rect.left) * 1100 / rect.width));
+    targetY = Math.max(0, Math.min(280, (event.clientY - rect.top) * 280 / rect.height));
+    if (!frame) frame = requestAnimationFrame(move);
+  };
+  signature.addEventListener('pointerenter', event => {
+    signature.classList.add('is-hovered');
+    pointAt(event);
+  });
+  signature.addEventListener('pointermove', pointAt, { passive: true });
+  signature.addEventListener('pointerleave', () => {
+    signature.classList.remove('is-hovered');
+    targetX = 550;
+    targetY = 140;
+    if (!frame) frame = requestAnimationFrame(move);
+  });
 }
 
 function scheduleHeroMotion(hero) {

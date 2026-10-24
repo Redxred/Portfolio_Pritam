@@ -226,6 +226,36 @@
 .legacy-motion-footer.is-visible .legacy-footer-copy > :nth-child(4) { animation-delay: .22s; }
 .legacy-motion-footer.is-visible .legacy-footer-visual { animation: footer-rise .9s .12s cubic-bezier(.22, 1, .36, 1) both; }
 
+.legacy-footer-signature {
+  position: relative;
+  max-width: 1100px;
+  margin: clamp(24px, 3.5vw, 48px) auto 0;
+  user-select: none;
+}
+.legacy-footer-signature svg { display: block; width: 100%; height: auto; overflow: visible; }
+.legacy-footer-signature text {
+  font: 700 156px/1 'Space Grotesk', Inter, sans-serif;
+  letter-spacing: -.06em;
+  text-anchor: middle;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.footer-signature-base text { stroke: #8198ab; stroke-width: 2.4; opacity: .7; }
+.footer-signature-trace text {
+  stroke: #e4f4fa;
+  stroke-width: 2.7;
+  stroke-dasharray: 1800;
+  stroke-dashoffset: 1800;
+}
+.legacy-footer-signature.is-visible .footer-signature-trace text { animation: footer-signature-draw 3s cubic-bezier(.3, 0, .2, 1) forwards; }
+.legacy-footer-signature.is-visible .footer-signature-trace text + text { animation-delay: .35s; }
+.footer-signature-color { opacity: 0; transition: opacity .3s ease; }
+.footer-signature-color text { stroke: url(#footer-signature-colors); stroke-width: 4.5; }
+.legacy-footer-signature.is-hovered .footer-signature-color { opacity: 1; }
+
+@keyframes footer-signature-draw { to { stroke-dashoffset: 0; } }
+
 @keyframes footer-rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes footer-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @keyframes footer-orbit { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
@@ -241,6 +271,9 @@
   .legacy-footer-nav { order: 3; width: 100%; justify-content: flex-start; }
 }
 @media (max-width: 650px) {
+  .legacy-footer-signature { margin-top: 22px; }
+  .legacy-footer-signature .footer-signature-trace { display: none; }
+  .legacy-footer-signature .footer-signature-color { opacity: 1; -webkit-mask: none; mask: none; }
   .legacy-motion-footer .legacy-footer-showcase::after,
   .legacy-motion-footer .legacy-footer-kicker span,
   .legacy-motion-footer .legacy-footer-orbit,
@@ -267,6 +300,10 @@
   .legacy-motion-footer .legacy-footer-row { flex-direction: column; gap: 9px; text-align: center; }
   .legacy-footer-credit { display: none; }
 }
+@media (hover: none) {
+  .legacy-footer-signature .footer-signature-trace { display: none; }
+  .legacy-footer-signature .footer-signature-color { opacity: 1; -webkit-mask: none; mask: none; }
+}
 @media (max-width: 390px) {
   .legacy-footer-actions a { width: 100%; }
   .legacy-footer-brand small { font-size: 9px; }
@@ -285,6 +322,8 @@
   .legacy-motion-footer .legacy-footer-row { padding-top: 13px; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .legacy-footer-signature .footer-signature-trace { display: none; }
+  .legacy-footer-signature .footer-signature-color { opacity: 1; -webkit-mask: none; mask: none; transition: none; }
   .legacy-motion-footer .legacy-footer-showcase::after,
   .legacy-motion-footer .legacy-footer-kicker span,
   .legacy-motion-footer .legacy-footer-orbit,

@@ -218,6 +218,23 @@ try {
     const scrollY = await evaluate('window.scrollY');
     assert.ok(scrollY <= 12, `Back-to-top stopped at ${scrollY}px`);
   });
+  await check('Footer name draws in and follows the cursor', async () => {
+    const signature = '.legacy-footer-signature';
+    assert.equal(await evaluate(`document.querySelector('${signature}').getAttribute('aria-label')`), 'Pritam Nath Dipta');
+    await evaluate(`document.querySelector('${signature}').scrollIntoView({behavior:'instant',block:'center'})`);
+    await wait(250);
+    assert.equal(await evaluate(`document.querySelector('${signature}').classList.contains('is-visible')`), true);
+    const rect = await evaluate(`(()=>{const r=document.querySelector('${signature} svg').getBoundingClientRect();return {left:r.left,top:r.top,width:r.width,height:r.height}})()`);
+    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: rect.left + rect.width * .2, y: rect.top + rect.height * .5 });
+    await wait(250);
+    const left = Number(await evaluate("document.querySelector('#footer-signature-reveal').getAttribute('cx')"));
+    assert.equal(await evaluate(`document.querySelector('${signature}').classList.contains('is-hovered')`), true);
+    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: rect.left + rect.width * .8, y: rect.top + rect.height * .5 });
+    await wait(250);
+    const right = Number(await evaluate("document.querySelector('#footer-signature-reveal').getAttribute('cx')"));
+    assert.ok(left < 500 && right > 600 && right - left > 200, JSON.stringify({ left, right }));
+    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 1, y: 1 });
+  });
 
   const axeCode = await readFile(new URL('../node_modules/axe-core/axe.min.js', import.meta.url), 'utf8');
   for (const theme of ['light', 'dark']) {
@@ -278,6 +295,11 @@ try {
         assert.ok(sceneRequests.includes('/assets/hero-flow-mobile.js'), JSON.stringify(sceneRequests));
         assert.equal(sceneRequests.includes('/assets/hero-flow.js'), false);
         assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-flow-glow')).animationName"), 'none');
+      });
+      await check('Footer name stays visible without hover on touch screens', async () => {
+        const color = await evaluate("getComputedStyle(document.querySelector('.footer-signature-color')).opacity");
+        assert.equal(color, '1');
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('.footer-signature-color')).maskImage"), 'none');
       });
       await check('Small screen header name stays on one line', async () => {
         const layout = await evaluate("(()=>{const brand=document.querySelector('#root header .container > button:first-child').getBoundingClientRect();const theme=[...document.querySelectorAll('#root header button[aria-label^=\"Switch to\"]')].map(e=>e.getBoundingClientRect()).find(r=>r.width);return {height:brand.height,right:brand.right,themeLeft:theme?.left}})()");
