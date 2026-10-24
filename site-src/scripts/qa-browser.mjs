@@ -95,17 +95,18 @@ try {
   await screenshot('desktop-hero');
   await check('Hero background follows mouse movement', async () => {
     const rect = await evaluate("(()=>{const r=document.querySelector('main section:first-child').getBoundingClientRect();return {left:r.left,top:r.top,width:r.width,height:r.height}})()");
-    const alphaAt = x => evaluate(`(()=>{const c=document.querySelector('.hero-flow-canvas');return c.getContext('2d').getImageData(Math.round(c.width*${x}),Math.round(c.height*.5),1,1).data[3]})()`);
+    assert.equal(await evaluate("document.querySelector('.hero-flow-canvas').getContext('webgl2') !== null"), true);
     await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: rect.left + rect.width * .2, y: rect.top + rect.height * .5 });
     await wait(650);
     await screenshot('hero-pointer-left');
-    const leftAlpha = await alphaAt(.2);
-    const rightAlpha = await alphaAt(.8);
+    const leftPointer = Number(await evaluate("document.querySelector('.hero-flow-canvas').dataset.pointerX"));
     const hit = await evaluate(`(()=>{const e=document.elementFromPoint(${rect.left + rect.width * .2},${rect.top + rect.height * .5});return {element:e?.tagName,section:e?.closest('section')?.id,canvas:document.querySelector('.hero-flow-canvas').dataset.motionState}})()`);
-    assert.ok(leftAlpha > rightAlpha + 15, `Left pointer glow did not appear: ${JSON.stringify({ leftAlpha, rightAlpha, rect, hit })}`);
+    assert.ok(leftPointer > .17 && leftPointer < .23, `Left pointer position did not update: ${JSON.stringify({ leftPointer, rect, hit })}`);
+    assert.notEqual(hit.element, 'CANVAS');
     await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: rect.left + rect.width * .8, y: rect.top + rect.height * .5 });
     await wait(650);
-    assert.ok((await alphaAt(.8)) > (await alphaAt(.2)) + 15, 'Pointer glow did not follow to the right');
+    const rightPointer = Number(await evaluate("document.querySelector('.hero-flow-canvas').dataset.pointerX"));
+    assert.ok(rightPointer > .77 && rightPointer < .83, `Pointer glow did not follow to the right: ${rightPointer}`);
     await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 1, y: 1 });
   });
   await check('Welcome message opens after five seconds and quick reply works', async () => {
@@ -225,7 +226,7 @@ try {
       await wait(500);
       assert.equal(await evaluate(`document.documentElement.classList.contains('${theme}')`), true);
       assert.equal(await evaluate("document.querySelector('.hero-flow-canvas').dataset.motionTheme"), theme);
-      assert.equal(await evaluate("document.querySelector('.hero-flow-canvas').dataset.motionEngine"), 'canvas2d');
+      assert.equal(await evaluate("document.querySelector('.hero-flow-canvas').dataset.motionEngine"), 'threejs');
       assert.equal(await evaluate("document.querySelector('.hero-backdrop').contains(document.querySelector('canvas'))"), true);
       assert.equal(await evaluate("document.querySelectorAll('canvas').length"), 1);
     });

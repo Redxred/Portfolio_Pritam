@@ -67,7 +67,8 @@ const sceneCode = await readFile(scenePath, 'utf8');
 const minified = await transformWithEsbuild(sceneCode, 'hero-flow.js', {
   minify: true, target: 'es2020', legalComments: 'eof',
 });
-await writeFile(scenePath, minified.code);
+// Three.js embeds shader templates with trailing spaces; trim those in the checked bundle.
+await writeFile(scenePath, minified.code.replace(/[ \t]+$/gm, ''));
 
 await build({
   configFile: false,
