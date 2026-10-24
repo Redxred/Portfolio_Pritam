@@ -217,6 +217,12 @@
 .light .security-atmosphere { opacity: .65; }
 @media (max-width: 1100px) { .security-code { display: none; } }
 @media (max-width: 640px) {
+  .security-atmosphere::after,
+  .core-technologies .core-tech-card,
+  .core-technologies .core-tech-card > svg,
+  .core-technologies .core-tech-card::after,
+  .security-footer-sequence > span,
+  .security-footer-sequence::after { animation: none; }
   .security-coordinate { font-size: 8px; top: 18px; }
   .security-footer-sequence { font-size: 10px; margin: 24px auto 30px; }
   .security-footer-sequence > span { gap: 5px; }

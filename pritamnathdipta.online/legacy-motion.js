@@ -238,7 +238,10 @@ function scheduleHeroMotion(hero) {
       if (reducedMotion.matches || saveData) return;
       const canvas = hero.querySelector('.hero-flow-canvas');
       if (!canvas) return;
-      import('./assets/hero-flow.js').then(module => module.initHeroFlow(canvas)).catch(() => {});
+      const scene = matchMedia('(max-width: 767px)').matches
+        ? './assets/hero-flow-mobile.js'
+        : './assets/hero-flow.js';
+      import(scene).then(module => module.initHeroFlow(canvas)).catch(() => {});
     };
     if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 1500 });
     else setTimeout(start, 100);

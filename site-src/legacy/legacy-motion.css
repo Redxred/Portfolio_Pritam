@@ -95,7 +95,7 @@ section[id], #main-content { scroll-margin-top: 96px; }
 }
 
 @media (max-width: 640px) {
-  .hero-flow-glow { width: 90vw; height: 54vh; filter: blur(25px); }
+  .hero-flow-glow { width: 90vw; height: 54vh; filter: blur(25px); animation: none; }
   .hero-flow-glow-cyan { left: -45%; bottom: -12%; }
   .hero-flow-glow-violet { right: -50%; bottom: -20%; }
 }
@@ -585,6 +585,9 @@ section[id], #main-content { scroll-margin-top: 96px; }
 
 @media (max-width: 640px) {
   .legacy-motion-card:hover { transform: none; box-shadow: none; }
+  #about .portfolio-specialty-card .flex.items-start > div:first-child svg { animation: none; }
+  .legacy-motion-footer::before,
+  .legacy-motion-footer .legacy-footer-letter { animation: none; }
   .legacy-footer-name { margin-bottom: 4px; }
   .legacy-footer-content { padding-top: 18px; gap: 30px; }
   .legacy-footer-message > p:not(.legacy-footer-eyebrow) { font-size: 14px; }

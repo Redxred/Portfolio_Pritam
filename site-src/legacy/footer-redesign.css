@@ -241,6 +241,12 @@
   .legacy-footer-nav { order: 3; width: 100%; justify-content: flex-start; }
 }
 @media (max-width: 650px) {
+  .legacy-motion-footer .legacy-footer-showcase::after,
+  .legacy-motion-footer .legacy-footer-kicker span,
+  .legacy-motion-footer .legacy-footer-orbit,
+  .legacy-motion-footer .legacy-footer-visual img,
+  .legacy-motion-footer .legacy-footer-spark { animation: none; }
+  .legacy-footer-visual-caption { -webkit-backdrop-filter: none; backdrop-filter: none; background: #122235; }
   .legacy-motion-footer { padding-block: 22px 12px; }
   .legacy-footer-showcase { display: flex; flex-direction: column; align-items: stretch; border-radius: 19px; }
   .legacy-footer-copy { padding: 27px 26px 5px; }

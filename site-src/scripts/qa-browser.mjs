@@ -265,10 +265,19 @@ try {
     await send('Emulation.setTouchEmulationEnabled', { enabled: width < 768 });
     await wait(200);
     if (width === 320) {
-      await go('/'); await wait(1400);
+      await go('/');
       await check('Mobile welcome stays compact until opened', async () => {
+        for (let i = 0; i < 24 && await evaluate("document.querySelector('.welcome-chat-launcher').hidden"); i++) await wait(250);
         assert.equal(await evaluate("document.querySelector('.welcome-chat-card').hidden"), true);
         assert.equal(await evaluate("document.querySelector('.welcome-chat-launcher').hidden"), false);
+      });
+      await check('Mobile hero uses the lightweight animation', async () => {
+        for (let i = 0; i < 24 && await evaluate("document.querySelector('.hero-flow-canvas').dataset.motionEngine!=='canvas2d-mobile'"); i++) await wait(250);
+        assert.equal(await evaluate("document.querySelector('.hero-flow-canvas').dataset.motionEngine"), 'canvas2d-mobile');
+        const sceneRequests = await evaluate("performance.getEntriesByType('resource').map(r=>new URL(r.name).pathname).filter(p=>p.includes('hero-flow'))");
+        assert.ok(sceneRequests.includes('/assets/hero-flow-mobile.js'), JSON.stringify(sceneRequests));
+        assert.equal(sceneRequests.includes('/assets/hero-flow.js'), false);
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-flow-glow')).animationName"), 'none');
       });
       await check('Small screen header name stays on one line', async () => {
         const layout = await evaluate("(()=>{const brand=document.querySelector('#root header .container > button:first-child').getBoundingClientRect();const theme=[...document.querySelectorAll('#root header button[aria-label^=\"Switch to\"]')].map(e=>e.getBoundingClientRect()).find(r=>r.width);return {height:brand.height,right:brand.right,themeLeft:theme?.left}})()");

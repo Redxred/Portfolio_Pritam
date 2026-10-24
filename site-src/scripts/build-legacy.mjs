@@ -69,6 +69,7 @@ const minified = await transformWithEsbuild(sceneCode, 'hero-flow.js', {
 });
 // Three.js embeds shader templates with trailing spaces; trim those in the checked bundle.
 await writeFile(scenePath, minified.code.replace(/[ \t]+$/gm, ''));
+await copyFile(join(source, 'hero-flow-mobile.js'), join(destination, 'assets/hero-flow-mobile.js'));
 
 await build({
   configFile: false,
@@ -111,7 +112,7 @@ await mkdir(join(vercelOutput, 'download'), { recursive: true });
 for (const file of ['index.html', 'cv.html', '404.html', 'cv.css', 'cv.js', 'cv-fixes.css', 'legacy-motion.css', 'legacy-motion.js', 'security-motion.js', 'security-motion.css', 'footer-redesign.css', 'welcome-chat.css', 'welcome-chat.js', 'site-fixes.js', 'seo-fallback.css', 'Pritam_Nath_Dipta_CV.pdf', 'favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'social-card.png', 'robots.txt', 'sitemap.xml', 'llms.txt', '641baf96f1d35bf3322be08a41073b28.txt']) {
   await copyFile(join(destination, file), join(vercelOutput, file));
 }
-for (const file of ['index-motion.js', 'index-local.css', 'hero-flow.js', 'analytics.js', 'hero-optimized.webp', 'profile-optimized.webp', 'footer-hacker-cartoon.png']) {
+for (const file of ['index-motion.js', 'index-local.css', 'hero-flow.js', 'hero-flow-mobile.js', 'analytics.js', 'hero-optimized.webp', 'profile-optimized.webp', 'footer-hacker-cartoon.png']) {
   await copyFile(join(destination, 'assets', file), join(vercelOutput, 'assets', file));
 }
 await copyFile(join(destination, 'download/Pritam_Nath_Dipta_CV.pdf'), join(vercelOutput, 'download/Pritam_Nath_Dipta_CV.pdf'));

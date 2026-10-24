@@ -249,6 +249,7 @@
 }
 
 @media (max-width: 480px) {
+  .welcome-chat-card, .welcome-chat-menu { -webkit-backdrop-filter: none; backdrop-filter: none; }
   .welcome-chat { right: 10px; bottom: calc(12px + env(safe-area-inset-bottom)); }
   .welcome-chat-launcher { width: 44px; height: 44px; box-shadow: 0 7px 20px rgba(21, 178, 207, .22), 0 0 0 3px rgba(32, 209, 216, .06); }
   .welcome-chat-launcher svg { width: 21px; height: 21px; }
